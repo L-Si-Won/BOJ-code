@@ -10,26 +10,24 @@ int main()
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
-    string s;
-    cin >> s;
-    bool minus=false;
-    string temp="";
-    int sum=0;
+    int  n;
+    cin >> n;
+    long long len[n-1];
+    for(int i=0; i<n-1; i++)
+        cin >> len[i];
+    long long prc[n];
+    for(int i=0; i<n; i++)
+        cin >> prc[i];
 
-    for(int i=0; i<s.length()+1; i++)
+    int sum=0;
+    int temp_prc=prc[0];
+    for(int i=0; i<n-1; i++)
     {
-        if(s[i]=='-' || s[i]=='+' || s[i]=='\0')
+        if(temp_prc > prc[i])
         {
-            if(minus)
-                sum -= stoi(temp);
-            else
-                sum += stoi(temp);
-            temp="";
-            if(s[i]=='-')
-                minus=true;
+            temp_prc=prc[i];
         }
-        else
-            temp+=s[i];
+        sum += temp_prc*len[i];
     }
     cout << sum;
 }
