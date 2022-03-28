@@ -2,62 +2,51 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
+#include <list>
 
 using namespace std;
 
 int main()
 {
     cin.tie(NULL);
-    cout.tie(NULL);
     ios_base::sync_with_stdio(false);
     
-    int n=0;
+    string s;
+    cin >> s;
+    int n;
     cin >> n;
-    string s[n];
-    for(int i=0; i<n; i++)
-        cin >> s[i];
+    list<char>list(s.begin(), s.end());
+    auto now = list.end();
 
-    int open=0;
-    int j=0;
-    for(int i=0; i<n; i++)
+    while(n--)
     {
-        open=0;
-        j=0;
-        int len=s[i].length();
-        while(len--)
-        { 
-            if(open == 0)
+        char cmd;
+        cin >> cmd;
+
+        if(cmd == 'L')
+        {
+            if(now != list.begin())
+                now--;
+        }
+        if(cmd == 'D')
+        {
+            if(now != list.end())
+                now++;
+        }
+        if(cmd == 'B')
+        {
+            if(now != list.begin())
             {
-                if(s[i][j]==')')
-                {
-                    cout << "NO\n";
-                    goto skip;
-                }
-                if(s[i][j]=='(')
-                {
-                    open++;
-                    j++;
-                }
-            }
-            else if(open >= 1)
-            {
-                if(s[i][j]=='(')
-                {
-                    open++;
-                    j++;
-                }
-                else
-                {
-                    open--;
-                    j++;
-                }
+                now=list.erase(--now);
             }
         }
-        if(open==0)
-            cout << "YES\n";
-        else
-            cout << "NO\n";
-    skip:
-        j=0;
+        if(cmd == 'P')
+        {
+            char opr;
+            cin >> opr;
+            list.insert(now, opr);
+        }
     }
+    for(auto i=list.begin(); i!=list.end(); i++)
+        cout << *i;
 }
