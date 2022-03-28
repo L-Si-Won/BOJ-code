@@ -1,7 +1,7 @@
 #include <iostream>
-#include <algorithm>
-#include <vector>
+#include <sstream>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -10,24 +10,22 @@ int main()
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
-    int  n;
+    
+    int n;
     cin >> n;
-    int len[n-1];
-    for(int i=0; i<n-1; i++)
-        cin >> len[i];
-    int prc[n];
-    for(int i=0; i<n; i++)
-        cin >> prc[i];
+    string s;
+    string temp;
+    cin.ignore();
 
-    long long sum=0;
-    int temp_prc=prc[0];
-    for(int i=0; i<n-1; i++)
+    for(int i=0; i<n; i++)
     {
-        if(temp_prc > prc[i])
+        getline(cin, s);
+        stringstream sstream(s);
+        while(sstream >> temp)
         {
-            temp_prc=prc[i];
+            reverse(temp.begin(), temp.end());
+            cout << temp << " ";
         }
-        sum += (long long)temp_prc*len[i];
+        cout << "\n";
     }
-    cout << sum;
 }
