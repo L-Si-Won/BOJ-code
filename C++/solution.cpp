@@ -12,14 +12,14 @@ int main()
     ios_base::sync_with_stdio(false);
     int  n;
     cin >> n;
-    long long len[n-1];
+    int len[n-1];
     for(int i=0; i<n-1; i++)
         cin >> len[i];
-    long long prc[n];
+    int prc[n];
     for(int i=0; i<n; i++)
         cin >> prc[i];
 
-    int sum=0;
+    long long sum=0;
     int temp_prc=prc[0];
     for(int i=0; i<n-1; i++)
     {
@@ -27,7 +27,7 @@ int main()
         {
             temp_prc=prc[i];
         }
-        sum += temp_prc*len[i];
+        sum += (long long)temp_prc*len[i];
     }
     cout << sum;
 }
