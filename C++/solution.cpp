@@ -11,21 +11,53 @@ int main()
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
     
-    int n;
+    int n=0;
     cin >> n;
-    string s;
-    string temp;
-    cin.ignore();
+    string s[n];
+    for(int i=0; i<n; i++)
+        cin >> s[i];
 
+    int open=0;
+    int j=0;
     for(int i=0; i<n; i++)
     {
-        getline(cin, s);
-        stringstream sstream(s);
-        while(sstream >> temp)
-        {
-            reverse(temp.begin(), temp.end());
-            cout << temp << " ";
+        open=0;
+        j=0;
+        int len=s[i].length();
+        while(len--)
+        { 
+            if(open == 0)
+            {
+                if(s[i][j]==')')
+                {
+                    cout << "NO\n";
+                    goto skip;
+                }
+                if(s[i][j]=='(')
+                {
+                    open++;
+                    j++;
+                }
+            }
+            else if(open >= 1)
+            {
+                if(s[i][j]=='(')
+                {
+                    open++;
+                    j++;
+                }
+                else
+                {
+                    open--;
+                    j++;
+                }
+            }
         }
-        cout << "\n";
+        if(open==0)
+            cout << "YES\n";
+        else
+            cout << "NO\n";
+    skip:
+        j=0;
     }
 }
