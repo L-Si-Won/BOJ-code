@@ -1,5 +1,5 @@
 #include <iostream>
-#include <queue>
+#include <deque>
 
 using namespace std;
 
@@ -8,31 +8,69 @@ int main()
     cin.tie(NULL);
     ios_base::sync_with_stdio(false);
     
-    int n, k;
-    cin >> n >> k;
-    queue<int>q;
-    int que[n];
-    for(int i=1; i<n+1; i++)
-        q.push(i);
+    deque<int>d;
+    int n;
+    cin >> n;
     for(int i=0; i<n; i++)
     {
-        int temp;
-        for(int j=0; j<k-1; j++)
+        string cmd;
+        cin >> cmd;
+        if(cmd == "push_front")
         {
-            temp=q.front();
-            q.pop();
-            q.push(temp);
+            int opr;
+            cin >> opr;
+            d.push_front(opr);
         }
-        que[i]=q.front();
-        q.pop();
+        if(cmd == "push_back")
+        {
+            int opr;
+            cin >> opr;
+            d.push_back(opr);
+        }
+        if(cmd == "pop_front")
+        {
+            if(d.empty()==true)
+                cout << "-1\n";
+            else
+            {
+                cout << d.front() << "\n";
+                d.pop_front();
+            }
+        }
+        if(cmd == "pop_back")
+        {
+            if(d.empty()==true)
+                cout << "-1\n";
+            else
+            {
+                cout << d.back() << "\n";
+                d.pop_back();
+            }
+        }
+        if(cmd == "size")
+        {
+            cout << d.size() << "\n";
+        }
+        if(cmd == "empty")
+        {
+            if(d.empty()==true)
+                cout << "1\n";
+            else
+                cout << "0\n";
+        }
+        if(cmd == "front")
+        {
+            if(d.empty()==true)
+                cout << "-1\n";
+            else
+                cout << d.front() << "\n";
+        }
+        if(cmd == "back")
+        {
+            if(d.empty()==true)
+                cout << "-1\n";
+            else
+                cout << d.back() << "\n";
+        }
     }
-    cout << "<";
-    for(int i=0; i<n; i++)
-    {
-        if(i==0)
-            cout << que[i];
-        else
-            cout << ", " << que[i];
-    }
-    cout << ">";
 }
