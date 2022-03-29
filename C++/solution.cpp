@@ -1,76 +1,51 @@
 #include <iostream>
-#include <deque>
+#include <stack>
 
 using namespace std;
+
+void stackprint(stack<char> &stack)
+{
+    while(!stack.empty())
+    {
+        cout << stack.top();
+        stack.pop();
+    }
+}
 
 int main()
 {
     cin.tie(NULL);
     ios_base::sync_with_stdio(false);
     
-    deque<int>d;
-    int n;
-    cin >> n;
-    for(int i=0; i<n; i++)
+    string s;
+    getline(cin, s);
+    stack<char>stk;
+
+    for(int i=0; i<s.length(); i++)
     {
-        string cmd;
-        cin >> cmd;
-        if(cmd == "push_front")
+        if(s[i]=='<')
         {
-            int opr;
-            cin >> opr;
-            d.push_front(opr);
-        }
-        if(cmd == "push_back")
-        {
-            int opr;
-            cin >> opr;
-            d.push_back(opr);
-        }
-        if(cmd == "pop_front")
-        {
-            if(d.empty()==true)
-                cout << "-1\n";
-            else
+            stackprint(stk);
+            while(1)
             {
-                cout << d.front() << "\n";
-                d.pop_front();
+                if(s[i]=='>')
+                {
+                    cout << '>';
+                    break;
+                }
+                cout << s[i];
+                i++;
             }
         }
-        if(cmd == "pop_back")
+        else if(s[i]==' ')
         {
-            if(d.empty()==true)
-                cout << "-1\n";
-            else
-            {
-                cout << d.back() << "\n";
-                d.pop_back();
-            }
+            stackprint(stk);
+            cout << ' ';
         }
-        if(cmd == "size")
+        else
         {
-            cout << d.size() << "\n";
-        }
-        if(cmd == "empty")
-        {
-            if(d.empty()==true)
-                cout << "1\n";
-            else
-                cout << "0\n";
-        }
-        if(cmd == "front")
-        {
-            if(d.empty()==true)
-                cout << "-1\n";
-            else
-                cout << d.front() << "\n";
-        }
-        if(cmd == "back")
-        {
-            if(d.empty()==true)
-                cout << "-1\n";
-            else
-                cout << d.back() << "\n";
+            stk.push(s[i]);
         }
     }
+    stackprint(stk);
 }
