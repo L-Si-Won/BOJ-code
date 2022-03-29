@@ -1,8 +1,5 @@
 #include <iostream>
-#include <sstream>
-#include <string>
-#include <algorithm>
-#include <list>
+#include <queue>
 
 using namespace std;
 
@@ -11,42 +8,53 @@ int main()
     cin.tie(NULL);
     ios_base::sync_with_stdio(false);
     
-    string s;
-    cin >> s;
+    queue<int>q;
     int n;
     cin >> n;
-    list<char>list(s.begin(), s.end());
-    auto now = list.end();
-
-    while(n--)
+    for(int i=0; i<n; i++)
     {
-        char cmd;
+        string cmd;
         cin >> cmd;
-
-        if(cmd == 'L')
+        if(cmd == "push")
         {
-            if(now != list.begin())
-                now--;
-        }
-        if(cmd == 'D')
-        {
-            if(now != list.end())
-                now++;
-        }
-        if(cmd == 'B')
-        {
-            if(now != list.begin())
-            {
-                now=list.erase(--now);
-            }
-        }
-        if(cmd == 'P')
-        {
-            char opr;
+            int opr;
             cin >> opr;
-            list.insert(now, opr);
+            q.push(opr);
+        }
+        if(cmd == "pop")
+        {
+            if(!q.empty())
+            {
+                cout << q.front() << "\n";
+                q.pop();
+            }
+            else
+                cout << "-1\n";
+        }
+        if(cmd == "size")
+        {
+            cout << q.size() << "\n";
+        }
+        if(cmd == "empty")
+        {
+            if(!q.empty())
+                cout << "0\n";
+            else
+                cout << "1\n";
+        }
+        if(cmd == "front")
+        {
+            if(!q.empty())
+                cout << q.front() << "\n";
+            else
+                cout << "-1\n";
+        }
+        if(cmd == "back")
+        {
+            if(!q.empty())
+                cout << q.back() << "\n";
+            else
+                cout << "-1\n";
         }
     }
-    for(auto i=list.begin(); i!=list.end(); i++)
-        cout << *i;
 }
