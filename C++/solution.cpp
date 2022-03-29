@@ -3,29 +3,25 @@
 
 using namespace std;
 
-
-
 int main()
 {
-    string s;
-    cin >> s;
-    int open=0;
-    int sum=0;
-    for(int i=0; i<s.size()-1; i++)
+    int n;
+    cin >> n;
+    stack<int>stk;
+    int nge[n];
+    for(int i=0; i<n; i++)
+        nge[i]=-1;
+    int a[n];
+    for(int i=0; i<n; i++)
     {
-        if(s[i]=='(' && s[i+1]=='(')
+        cin >> a[i];
+        while(!stk.empty() && a[stk.top()] < a[i])
         {
-            open++;
+            nge[stk.top()]=a[i];
+            stk.pop();
         }
-        else if(s[i]=='(' && s[i+1]==')')
-        {
-            sum += open;
-        }
-        else if(s[i]==')' && s[i+1]==')')
-        {
-            sum += 1;
-            open--;
-        }
+        stk.push(i);
     }
-    cout << sum;
+    for(int i=0; i<n; i++)
+        cout << nge[i] << " ";
 }
