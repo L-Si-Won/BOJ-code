@@ -8,25 +8,63 @@ int main()
 {
     int n;
     cin >> n;
-    vector<int>a(n);
-    vector<int>f(1000001, 0);
-    stack<int>stk;
-    vector<int>ngf(n,-1);
+    string s;
+    cin >> s;
+    vector<pair<char, float>>v(n);
+    stack<double>stk;
+    double temp=0;
+    char save='A';
     for(int i=0; i<n; i++)
     {
-        cin >> a[i];
-        f[a[i]]++;
+        v[i].first=save++;
+        cin >> v[i].second;
     }
-
-    for(int i=0; i<n; i++)
+    for(int i=0; i<s.size(); i++)
     {
-        while( !stk.empty() && f[a[stk.top()]] < f[a[i]] )
+        if(s[i] >= 'A' && s[i] <= 'Z')
         {
-            ngf[stk.top()]=a[i];
-            stk.pop();
+            for(int j=0; j<26; j++)
+            {
+                if(v[j].first==s[i])
+                {
+                    stk.push(v[j].second);
+                }
+            }
         }
-        stk.push(i);
+        if(s[i] == '*')
+        {
+            temp=stk.top();
+            stk.pop();
+            temp = stk.top() * temp;
+            stk.pop();
+            stk.push(temp);
+        }
+        if(s[i] == '/')
+        {
+            temp=stk.top();
+            stk.pop();
+            temp = stk.top() / temp;
+            stk.pop();
+            stk.push(temp);
+        }
+        if(s[i] == '+')
+        {
+            temp=stk.top();
+            stk.pop();
+            temp = stk.top() + temp;
+            stk.pop();
+            stk.push(temp);
+        }
+        if(s[i] == '-')
+        {
+            temp=stk.top();
+            stk.pop();
+            temp = stk.top() - temp;
+            stk.pop();
+            stk.push(temp);
+        }
     }
-    for(int i=0; i<n; i++)
-        cout << ngf[i] << " ";
+    cout << fixed;
+    cout.precision(2);
+    cout << stk.top();
 }
