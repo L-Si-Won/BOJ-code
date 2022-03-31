@@ -1,21 +1,25 @@
 #include <iostream>
-#include <vector>
+#include <string>
 
 using namespace std;
 
 int main()
 {
     string s;
-    cin >> s;
-    vector<int>a(26, -1);
-    
-    for(int i=0; i<s.size(); i++)
+    while(getline(cin, s))
     {
-        if(a[s[i]-97] == -1)
+        int a=0, b=0, c=0, d=0;
+        for(int j=0; j<s.size(); j++)
         {
-            a[s[i]-97]=i;
+            if(s[j]>='a' && s[j]<='z')
+                a++;
+            if(s[j]>='A' && s[j]<='Z')
+                b++;
+            if(s[j]==' ')
+                d++;
+            if(s[j]>='0' && s[j]<='9')
+                c++;
         }
+        cout << a << " " << b << " " << c << " " << d << '\n';
     }
-    for(int i=0; i<26; i++)
-        cout << a[i] << " ";
 }
