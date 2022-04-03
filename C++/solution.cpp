@@ -1,31 +1,23 @@
 #include <iostream>
-#include <vector>
 #include <algorithm>
+#include <vector>
+#include <string>
 
 using namespace std;
 
 int main()
 {
-    int n;
-    cin >> n;
-    vector<int>v;
-    int a;
-    for(int i=0; i<n; i++)
+    string s;
+    cin >> s;
+
+    string temp;
+    vector<string>v;
+    for(int i=0; i < s.size(); i++)
     {
-        cin >> a;
-        v.push_back(a);
+        temp = s;
+        v.push_back(temp.erase(0,i));
     }
     sort(v.begin(), v.end());
-    vector<int>temp;
-    for(int i=0; i<n; i++)
-    {
-        temp.push_back((n-i) * v[i]);
-    }
-    int max=temp[0];
-    for(int i=1; i<n; i++)
-    {
-        if(max < temp[i])
-            max = temp[i];
-    }
-    cout << max;
+    for(int i=0; i<v.size(); i++)
+        cout << v[i] << "\n";
 }
