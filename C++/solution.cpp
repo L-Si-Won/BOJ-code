@@ -2,19 +2,24 @@
 
 using namespace std;
 
-long long d[100001][4];
-int mod=1e9 + 9;
+long long d[101][11];
+int mod=1e9;
 
-void dp()
+void stair(int n)
 {
-    d[1][1]=1;
-    d[2][2]=1;
-    d[3][1]=1, d[3][2]=1, d[3][3]=1;
-    for(int i=4; i<100001; i++)
+    for(int i=1; i<10; i++)
+        d[1][i]=1;
+    for(int i=2; i<n+1; i++)
     {
-        d[i][1]=(d[i-1][2]+d[i-1][3])%mod;
-        d[i][2]=(d[i-2][1]+d[i-2][3])%mod;
-        d[i][3]=(d[i-3][1]+d[i-3][2])%mod;
+        for(int j=0; j<10; j++)
+        {
+            if(j==0)
+                d[i][j]=d[i-1][j+1]%mod;
+            if(j==9)
+                d[i][j]=d[i-1][j-1]%mod;
+            else
+                d[i][j]=(d[i-1][j-1]+d[i-1][j+1])%mod;
+        }
     }
 }
 
@@ -24,13 +29,11 @@ int main()
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    int test;
-    cin >> test;
     int n;
-    dp();
-    for(int i=0; i<test; i++)
-    {
-        cin >> n;
-        cout << (d[n][1]+d[n][2]+d[n][3])%mod << "\n";
-    }
+    cin >> n;
+    stair(n);
+    long long sum=0;
+    for(int i=0; i<10; i++)
+        sum+=d[n][i]%mod;
+    cout << sum%mod;
 }
