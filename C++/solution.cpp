@@ -3,26 +3,35 @@
 
 using namespace std;
 
-vector<int>v(11,0);
+int d[1001];
+int a[1001];
 
-int dp(vector<int> &v, int i)
+int dp(int x)
 {
-    if(i==1) return 1;
-    if(i==2) return 2;
-    if(i==3) return 4;
-    if(v[i]!=0) return v[i];
-    v.push_back(dp(v,i-1)+dp(v,i-2)+dp(v,i-3));
-    return v.back();
+    for(int i=1; i<x+1; i++)
+        d[i]=a[i];
+
+    for(int i=2; i<x+1; i++)
+    {
+        for(int j=1; j<i+1; j++)
+        {
+            if(d[i] > a[j]+d[i-j])
+                d[i] = a[j]+d[i-j];
+        }
+    }
+    return d[x];
 }
 
 int main()
 {
-    int test;
-    cin >> test;
+    cin.tie(NULL);
+    cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
+
     int n;
-    for(int i=0; i<test; i++)
-    {
-        cin >> n;
-        cout << dp(v, n) << "\n";
-    }
+    cin >> n;
+
+    for(int i=1; i<n+1; i++)
+        cin >> a[i];
+    cout << dp(n);
 }
