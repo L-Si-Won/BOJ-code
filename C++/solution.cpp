@@ -2,24 +2,15 @@
 
 using namespace std;
 
-long long d[101][11];
-int mod=1e9;
-
-void stair(int n)
+long long d[91][2];
+void dp(int n)
 {
-    for(int i=1; i<10; i++)
-        d[1][i]=1;
+    d[1][1]=1;
     for(int i=2; i<n+1; i++)
     {
-        for(int j=0; j<10; j++)
-        {
-            if(j==0)
-                d[i][j]=d[i-1][j+1]%mod;
-            if(j==9)
-                d[i][j]=d[i-1][j-1]%mod;
-            else
-                d[i][j]=(d[i-1][j-1]+d[i-1][j+1])%mod;
-        }
+        d[i][0]+=d[i-1][0];
+        d[i][1]+=d[i-1][0];
+        d[i][0]+=d[i-1][1];
     }
 }
 
@@ -31,9 +22,6 @@ int main()
 
     int n;
     cin >> n;
-    stair(n);
-    long long sum=0;
-    for(int i=0; i<10; i++)
-        sum+=d[n][i]%mod;
-    cout << sum%mod;
+    dp(n);
+    cout << d[n][0]+d[n][1];
 }
