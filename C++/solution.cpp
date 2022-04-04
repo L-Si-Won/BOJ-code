@@ -15,7 +15,7 @@ int dp(int x)
     {
         for(int j=1; j<i+1; j++)
         {
-            if(d[i] > a[j]+d[i-j])
+            if(d[i] < a[j]+d[i-j])
                 d[i] = a[j]+d[i-j];
         }
     }
