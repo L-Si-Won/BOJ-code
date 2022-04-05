@@ -2,16 +2,26 @@
 
 using namespace std;
 
-long long d[91][2];
-void dp(int n)
+int d[1001];
+int a[1001];
+int dp(int n)
 {
-    d[1][1]=1;
-    for(int i=2; i<n+1; i++)
+    int sol=0;
+    for(int i=1; i<n+1; i++)
     {
-        d[i][0]+=d[i-1][0];
-        d[i][1]+=d[i-1][0];
-        d[i][0]+=d[i-1][1];
+        d[i]=1;
+        for(int j=i-1; j>0; j--)
+        {
+            if(a[i] > a[j])
+            {
+                if(d[i] < d[j]+1)
+                    d[i]=d[j]+1;
+            }
+        }
+        if(sol < d[i])
+            sol=d[i];
     }
+    return sol;
 }
 
 int main()
@@ -22,6 +32,7 @@ int main()
 
     int n;
     cin >> n;
-    dp(n);
-    cout << d[n][0]+d[n][1];
+    for(int i=1; i<n+1; i++)
+        cin >> a[i];
+    cout << dp(n);
 }
