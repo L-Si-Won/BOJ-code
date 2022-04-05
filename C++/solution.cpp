@@ -4,9 +4,11 @@ using namespace std;
 
 int d[1001];
 int a[1001];
+int temp[1001];
 int dp(int n)
 {
     int sol=0;
+    int cnt=1;
     for(int i=1; i<n+1; i++)
     {
         d[i]=1;
@@ -18,8 +20,25 @@ int dp(int n)
                     d[i]=d[j]+1;
             }
         }
-        if(sol < d[i])
+        if(sol <= d[i])
+        {
+            if(sol==d[i])
+            {
+                for(int j=i-1; j>0; j--)
+                {
+                    if(a[i] < a[j])
+                    {
+                        temp[cnt-1]=a[i];
+                    }
+                }
+            }
+            else
+            {
+                temp[cnt]=a[i];
+                cnt++;
+            }
             sol=d[i];
+        }
     }
     return sol;
 }
@@ -34,5 +53,7 @@ int main()
     cin >> n;
     for(int i=1; i<n+1; i++)
         cin >> a[i];
-    cout << dp(n);
+    cout << dp(n) <<"\n";
+    for(int i=1; i<dp(n)+1; i++)
+        cout << temp[i] << " ";
 }
