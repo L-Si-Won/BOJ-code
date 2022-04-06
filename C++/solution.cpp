@@ -2,45 +2,17 @@
 
 using namespace std;
 
-int d[1001];
-int a[1001];
-int temp[1001];
-int dp(int n)
+int d[100001];
+int a[100001];
+void dp(int n)
 {
-    int sol=0;
-    int cnt=1;
-    for(int i=1; i<n+1; i++)
+    d[1]=a[1];
+    for(int i=2; i<n+1; i++)
     {
-        d[i]=1;
-        for(int j=i-1; j>0; j--)
-        {
-            if(a[i] > a[j])
-            {
-                if(d[i] < d[j]+1)
-                    d[i]=d[j]+1;
-            }
-        }
-        if(sol <= d[i])
-        {
-            if(sol==d[i])
-            {
-                for(int j=i-1; j>0; j--)
-                {
-                    if(a[i] < a[j])
-                    {
-                        temp[cnt-1]=a[i];
-                    }
-                }
-            }
-            else
-            {
-                temp[cnt]=a[i];
-                cnt++;
-            }
-            sol=d[i];
-        }
+        d[i]=a[i];
+        if(d[i] < d[i-1]+a[i])
+            d[i]=d[i-1]+a[i];
     }
-    return sol;
 }
 
 int main()
@@ -53,7 +25,10 @@ int main()
     cin >> n;
     for(int i=1; i<n+1; i++)
         cin >> a[i];
-    cout << dp(n) <<"\n";
-    for(int i=1; i<dp(n)+1; i++)
-        cout << temp[i] << " ";
+    dp(n);
+    int max=d[1];
+    for(int i=2; i<n+1; i++)
+        if(max < d[i])
+            max=d[i];
+    cout << max;
 }
