@@ -1,25 +1,6 @@
 #include <iostream>
 
 using namespace std;
-#define max 100001
-int d[max];
-void dp(int n)
-{
-    d[1]=1;
-    d[2]=2;
-    d[3]=3;
-    int min=0;
-
-    for(int i=4; i<n+1; i++)
-    {
-        d[i]=d[i-1]+1;
-        for(int j=1; j*j<=i; j++)
-        {
-            if(d[i-j*j]+1 < d[i])
-                d[i]=d[i-j*j]+1;
-        }
-    }
-}
 
 int main()
 {
@@ -29,6 +10,30 @@ int main()
 
     int n;
     cin >> n;
-    dp(n);
-    cout << d[n];
+    int x1, y1, r1, x2, y2, r2;
+    int ans=0;
+    for(int i=0; i<n; i++)
+    {
+        cin >> x1 >> y1 >> r1 >> x2 >> y2 >> r2;
+        if(x1==x2 && y1==y2)
+        {
+            if(r1==r2)
+                ans=-1;
+            else
+                ans=0;
+        }
+        else
+        {
+            ans=2;
+            if((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)==(r1+r2)*(r1+r2))
+                ans=1;
+            if((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)==(r2-r1)*(r2-r1))
+                ans=1;
+            if((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2) > (r1+r2)*(r1+r2))
+                ans=0;
+            if((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2) < (r1-r2)*(r1-r2))
+                ans=0;
+        }
+        cout << ans << "\n";
+    }
 }
