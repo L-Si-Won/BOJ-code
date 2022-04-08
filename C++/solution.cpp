@@ -2,38 +2,35 @@
 
 using namespace std;
 
+int mod = 1e9;
+long long d[201][201];
+void dp()
+{
+    for(int i=0; i<201; i++)
+    {
+        d[1][i]=1;
+        d[i][1]=i;
+        d[i][0]=1;
+    }
+    d[0][0]=0;
+    for(int i=2; i<201; i++)
+    {
+        for(int j=2; j<201; j++)
+        {
+            d[i][j]=(d[i][j-1]+d[i-1][j])%mod;
+        }
+    }
+}
+
+
 int main()
 {
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    int n;
-    cin >> n;
-    int x1, y1, r1, x2, y2, r2;
-    int ans=0;
-    for(int i=0; i<n; i++)
-    {
-        cin >> x1 >> y1 >> r1 >> x2 >> y2 >> r2;
-        if(x1==x2 && y1==y2)
-        {
-            if(r1==r2)
-                ans=-1;
-            else
-                ans=0;
-        }
-        else
-        {
-            ans=2;
-            if((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)==(r1+r2)*(r1+r2))
-                ans=1;
-            if((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)==(r2-r1)*(r2-r1))
-                ans=1;
-            if((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2) > (r1+r2)*(r1+r2))
-                ans=0;
-            if((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2) < (r1-r2)*(r1-r2))
-                ans=0;
-        }
-        cout << ans << "\n";
-    }
+    int n, k;
+    cin >> n >> k;
+    dp();
+    cout << d[k][n];
 }
