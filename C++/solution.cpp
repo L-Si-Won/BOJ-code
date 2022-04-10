@@ -3,23 +3,19 @@
 
 using namespace std;
 
-int d[10001][3];
-int a[10001];
-int dp(int n)
+long long d[101];
+int temp[9]={0,0,1,7,4,2,0,8,10};
+void dp()
 {
-    int ans;
-    int three=1;
-    d[1][0]=0;
-    d[1][1]=a[1];
-    d[1][2]=a[1];
-    for(int i=2; i<n+1; i++)
+    for(int i=2; i<9; i++)
+        d[i]=temp[i];
+    d[6]=6;
+    for(int i=9; i<101; i++) //가장 작은 수
     {
-        d[i][0]=max(max(d[i-1][0], d[i-1][1]), d[i-1][2]);
-        d[i][1]=d[i-1][0]+a[i];
-        d[i][2]=d[i-1][1]+a[i];
+        d[i]=d[i-2]*10+temp[2];
+        for(int j=3; j<8; j++)
+            d[i]=min(d[i-j]*10+temp[j], d[i]);
     }
-    ans = max(max(d[n][0], d[n][1]),d[n][2]);
-    return ans;
 }
 
 int main()
@@ -28,9 +24,26 @@ int main()
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    int n;
-    cin >> n;
-    for(int i=1; i<n+1; i++)
-        cin >> a[i];
-    cout << dp(n);
+    int test_case;
+    cin >> test_case;
+    dp();
+    for(int i=0; i<test_case; i++)
+    {
+        int n;
+        cin >> n;
+        cout << d[n] << " ";
+        if(n%2==0)
+        {
+            for(int j=0; j<n/2; j++)
+                cout << "1";
+            cout << "\n";
+        }
+        else
+        {
+            cout << "7";
+            for(int j=0; j<(n-1)/2-1; j++)
+                cout << "1";
+            cout << "\n";
+        }
+    }
 }
