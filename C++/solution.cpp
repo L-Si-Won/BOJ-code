@@ -3,19 +3,29 @@
 
 using namespace std;
 
-long long d[101];
-int temp[9]={0,0,1,7,4,2,0,8,10};
-void dp()
+int d[1001];
+int a[1001];
+
+int dp(int n)
 {
-    for(int i=2; i<9; i++)
-        d[i]=temp[i];
-    d[6]=6;
-    for(int i=9; i<101; i++) //가장 작은 수
+    d[1]=a[1];
+    int MAX;
+    for(int i=2; i<n+1; i++)
     {
-        d[i]=d[i-2]*10+temp[2];
-        for(int j=3; j<8; j++)
-            d[i]=min(d[i-j]*10+temp[j], d[i]);
+        MAX=a[i];
+        for(int j=i-1; j>0; j--)
+        {
+            if(a[i] > a[j])
+            {
+                MAX=max(MAX, d[j]+a[i]);
+            }
+        }
+        d[i]=MAX;
     }
+    MAX=d[1];
+    for(int i=2; i<n+1; i++)
+        MAX=max(MAX, d[i]);
+    return MAX;
 }
 
 int main()
@@ -24,26 +34,9 @@ int main()
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    int test_case;
-    cin >> test_case;
-    dp();
-    for(int i=0; i<test_case; i++)
-    {
-        int n;
-        cin >> n;
-        cout << d[n] << " ";
-        if(n%2==0)
-        {
-            for(int j=0; j<n/2; j++)
-                cout << "1";
-            cout << "\n";
-        }
-        else
-        {
-            cout << "7";
-            for(int j=0; j<(n-1)/2-1; j++)
-                cout << "1";
-            cout << "\n";
-        }
-    }
+    int n;
+    cin >> n;
+    for(int i=1; i<n+1; i++)
+        cin >> a[i];
+    cout << dp(n);   
 }
