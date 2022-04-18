@@ -1,44 +1,26 @@
 #include <iostream>
-#include <algorithm>
 
 using namespace std;
-int gcd(int a, int b){
-    int c;
-    while(b!=0){
-        c=a%b;
-        a=b;
-        b=c;
-    }
-    return a;
-}
 
-int lcm(int a, int b){
-    return a * b / gcd(a,b);
-}
+int n, m;
+int arr[9];
+bool visited[9];
 
-int func(int n, int m, int x, int y){
-    if(n < m)
-        return func(m, n , y, x);
-    int a=x, b=x;
-    int cnt=x;
-    int MAX=lcm(n, m);
-    if(b>m){
-        b=b%m;
-        if(b==0)
-            b=m;
+void dfs(int cnt){
+    if(cnt==m){
+        for(int i=0; i<m; i++)
+            cout << arr[i] << " ";
+        cout << "\n";
+        return ;
     }
-    while(cnt<=MAX){
-        if(a==x && b==y)
-            return cnt;
-        b+=n-m;
-        if(b>m){
-            b=b%m;
-            if(b==0)
-                b=m;
+    for(int i=1; i<n+1; i++){
+        if(!visited[i]){
+            visited[i]=true;
+            arr[cnt]=i;
+            dfs(cnt+1);
+            visited[i]=false;
         }
-        cnt += n;
     }
-    return -1;
 }
 
 int main(){
@@ -46,11 +28,6 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    int n, m, x, y;
-    int test_case;
-    cin >> test_case;
-    for(int i=0; i<test_case; i++){
-        cin >> n >> m >> x >> y;
-        cout << func(n, m, x, y) << "\n";
-    }
+    cin >> n >> m;
+    dfs(0);
 }
