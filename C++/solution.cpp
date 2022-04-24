@@ -8,7 +8,7 @@ int arr[9];
 int temp[9];
 bool visit[9];
 
-void dfs(int num, int cnt){
+void dfs(int cnt){
     if(cnt==m){
         for(int i=0; i<m; i++)
             cout << temp[i] << " ";
@@ -16,13 +16,11 @@ void dfs(int num, int cnt){
         return ;
     }
     int check=0;
-    for(int i=num; i<n+1; i++){
-        if(!visit[i] && arr[i]!=check){
-            visit[i]=true;
+    for(int i=1; i<n+1; i++){
+        if(arr[i]!=check){
             temp[cnt]=arr[i];
             check=temp[cnt];
-            dfs(i+1, cnt+1);
-            visit[i]=false;
+            dfs(cnt+1);
         }
     }
 }
@@ -36,5 +34,5 @@ int main(){
     for(int i=1; i<n+1; i++)
         cin >> arr[i];
     sort(arr+1, arr+n+1);
-    dfs(0, 0);
+    dfs(0);
 }
