@@ -3,26 +3,19 @@
 
 using namespace std;
 
-int n, m;
-int arr[9];
-int temp[9];
-bool visit[9];
+int n;
+int arr[10001];
 
-void dfs(int num, int cnt){
-    if(cnt==m){
-        for(int i=0; i<m; i++)
-            cout << temp[i] << " ";
-        cout << "\n";
-        return ;
-    }
-    int check=0;
-    for(int i=num; i<n+1; i++){
-        if(arr[i]!=check){
-            temp[cnt]=arr[i];
-            check=temp[cnt];
-            dfs(i, cnt+1);
-        }
-    }
+bool dfs(){
+    int i = n-1;
+    while(i>0 && arr[i-1]>arr[i]) i--;
+    if(i<=0) return false;
+
+    int j=n-1;
+    while(arr[i-1]>arr[j]) j--;
+    swap(arr[i-1], arr[j]);
+    sort(arr+i, arr+n);
+    return true;
 }
 
 int main(){
@@ -30,9 +23,12 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n >> m;
-    for(int i=1; i<n+1; i++)
+    cin >> n;
+    for(int i=0; i<n; i++)
         cin >> arr[i];
-    sort(arr+1, arr+n+1);
-    dfs(0, 0);
+    if(dfs()){
+        for(int i=0; i<n; i++)
+            cout << arr[i] << " ";
+    }
+    else cout << "-1";
 }
