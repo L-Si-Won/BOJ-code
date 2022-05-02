@@ -4,7 +4,7 @@
 using namespace std;
 
 int n;
-int arr[10001];
+int arr[9];
 
 bool comp(int i, int j){
     return i > j;
@@ -12,13 +12,13 @@ bool comp(int i, int j){
 
 bool dfs(){
     int i = n-1;
-    while(i>0 && arr[i-1]<arr[i]) i--;
+    while(i>0 && arr[i-1]>arr[i]) i--;
     if(i<=0) return false;
 
     int j=n-1;
-    while(arr[i-1]<arr[j]) j--;
+    while(arr[i-1]>arr[j]) j--;
     swap(arr[i-1], arr[j]);
-    sort(arr+i, arr+n, comp);
+    sort(arr+i, arr+n);
     return true;
 }
 
@@ -29,10 +29,14 @@ int main(){
 
     cin >> n;
     for(int i=0; i<n; i++)
-        cin >> arr[i];
-    if(dfs()){
+        arr[i]=i+1;
+    
+    for(int i=0; i<n; i++)
+        cout << arr[i] << " ";
+    cout << "\n";
+    while(dfs()){
         for(int i=0; i<n; i++)
             cout << arr[i] << " ";
+        cout << "\n";
     }
-    else cout << "-1";
 }
