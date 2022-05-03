@@ -4,13 +4,33 @@
 using namespace std;
 
 int n;
-int arr[9];
+int arr[11][11];
+bool visit[11];
+int MIN=2e9;
+int temp;
 
-int sum(){
-    int sum=0;
-    for(int i=0; i<n-1; i++)
-        sum += abs(arr[i]-arr[i+1]);
-    return sum;
+void dfs(int a, int cnt, int cost){
+    if(cnt==n){
+        if(arr[a][temp]>0) MIN=min(cost+arr[a][temp], MIN);
+        return ;
+    }
+
+    for(int i=0; i<n; i++){
+        if(arr[a][i]!=0 && visit[i]==false){
+            visit[i]=true;
+            dfs(i, cnt+1, cost+arr[a][i]);
+            visit[i]=false;
+        }
+    }
+}
+
+void brute_force(){
+    for(int i=0; i<n; i++){
+        temp=i;
+        visit[i]=true;
+        dfs(i, 1, 0);
+        visit[i]=false;
+    }
 }
 
 int main(){
@@ -20,12 +40,8 @@ int main(){
 
     cin >> n;
     for(int i=0; i<n; i++)
-        cin >> arr[i];
-
-    sort(arr, arr+n);
-
-    int MAX=sum();
-    while(next_permutation(arr, arr+n))
-        MAX=max(MAX, sum());
-    cout << MAX;
+        for(int j=0; j<n; j++)
+            cin >> arr[i][j];
+    brute_force();
+    cout << MIN;
 }
