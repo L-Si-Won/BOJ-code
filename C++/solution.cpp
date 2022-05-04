@@ -1,35 +1,29 @@
 #include <iostream>
 #include <algorithm>
+#include <cstring>
 
 using namespace std;
 
 int n;
-int arr[11][11];
-bool visit[11];
-int MIN=2e9;
-int temp;
+int arr[13];
+int temp[6];
+bool visit[13];
 
-void dfs(int a, int cnt, int cost){
-    if(cnt==n){
-        if(arr[a][temp]>0) MIN=min(cost+arr[a][temp], MIN);
+void dfs(int cnt, int num){
+    if(cnt==6){
+        for(int i=0; i<6; i++)
+            cout << temp[i] << " ";
+        cout << "\n";
         return ;
     }
 
-    for(int i=0; i<n; i++){
-        if(arr[a][i]!=0 && visit[i]==false){
+    for(int i=num; i<n; i++){
+        if(visit[i]==false){
             visit[i]=true;
-            dfs(i, cnt+1, cost+arr[a][i]);
+            temp[cnt]=arr[i];
+            dfs(cnt+1, i+1);
             visit[i]=false;
         }
-    }
-}
-
-void brute_force(){
-    for(int i=0; i<n; i++){
-        temp=i;
-        visit[i]=true;
-        dfs(i, 1, 0);
-        visit[i]=false;
     }
 }
 
@@ -38,10 +32,17 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n;
-    for(int i=0; i<n; i++)
-        for(int j=0; j<n; j++)
-            cin >> arr[i][j];
-    brute_force();
-    cout << MIN;
+    while(1){
+        cin >> n;
+        if(n==0) break;
+
+        memset(arr, 0, sizeof(int)*13);
+        memset(temp, 0, sizeof(int)*6);
+        memset(visit, false, sizeof(bool)*13);
+        for(int i=0; i<n; i++)
+            cin >> arr[i];
+
+        dfs(0, 0);
+        cout << "\n";
+    }
 }
