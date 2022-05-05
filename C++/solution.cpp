@@ -1,23 +1,33 @@
 #include <iostream>
 #include <algorithm>
-#include <cstring>
 
 using namespace std;
 
-int n;
-int arr[13];
-int temp[6];
-bool visit[13];
+int L, C;
+char arr[15];
+char temp[15];
+bool visit[15];
 
 void dfs(int cnt, int num){
-    if(cnt==6){
-        for(int i=0; i<6; i++)
-            cout << temp[i] << " ";
+    if(cnt==L){
+        int vowel=0;
+        int cons=0;
+        for(int i=0; i<L; i++){
+            if(temp[i]=='a' || temp[i]=='e' || temp[i]=='i' || temp[i]=='o' || temp[i]=='u')
+                vowel++;
+            else
+                cons++;
+        }
+        if(vowel<1 || cons<2)
+            return ;
+
+        for(int i=0; i<L; i++)
+            cout << temp[i];
         cout << "\n";
         return ;
     }
 
-    for(int i=num; i<n; i++){
+    for(int i=num; i<C; i++){
         if(visit[i]==false){
             visit[i]=true;
             temp[cnt]=arr[i];
@@ -32,17 +42,9 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    while(1){
-        cin >> n;
-        if(n==0) break;
-
-        memset(arr, 0, sizeof(int)*13);
-        memset(temp, 0, sizeof(int)*6);
-        memset(visit, false, sizeof(bool)*13);
-        for(int i=0; i<n; i++)
-            cin >> arr[i];
-
-        dfs(0, 0);
-        cout << "\n";
-    }
+    cin >> L >> C;
+    for(int i=0; i<C; i++)
+        cin >> arr[i];
+    sort(arr, arr+C);
+    dfs(0, 0);
 }
