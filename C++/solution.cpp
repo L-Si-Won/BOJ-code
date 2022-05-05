@@ -3,38 +3,28 @@
 
 using namespace std;
 
-int L, C;
-char arr[15];
-char temp[15];
-bool visit[15];
+int n;
+int t[15];
+int p[15];
+int d[15][2];
+int MAX;
 
-void dfs(int cnt, int num){
-    if(cnt==L){
-        int vowel=0;
-        int cons=0;
-        for(int i=0; i<L; i++){
-            if(temp[i]=='a' || temp[i]=='e' || temp[i]=='i' || temp[i]=='o' || temp[i]=='u')
-                vowel++;
-            else
-                cons++;
-        }
-        if(vowel<1 || cons<2)
-            return ;
+int dp(){
+    if(t[0]<=n) d[0][1]=p[0];
 
-        for(int i=0; i<L; i++)
-            cout << temp[i];
-        cout << "\n";
-        return ;
-    }
-
-    for(int i=num; i<C; i++){
-        if(visit[i]==false){
-            visit[i]=true;
-            temp[cnt]=arr[i];
-            dfs(cnt+1, i+1);
-            visit[i]=false;
+    for(int i=1; i<n; i++){
+        d[i][0]=max(d[i-1][0], d[i-1][1]);
+        
+        if(i+t[i]<=n){
+            d[i][1]=p[i];
+            for(int j=i-1; j>=0; j--){
+                if(i-j>=t[j])
+                    d[i][1]=max(d[i][1], d[j][1]+p[i]);
+            }
         }
     }
+    MAX=max(d[n-1][0], d[n-1][1]);
+    return MAX;
 }
 
 int main(){
@@ -42,9 +32,9 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> L >> C;
-    for(int i=0; i<C; i++)
-        cin >> arr[i];
-    sort(arr, arr+C);
-    dfs(0, 0);
+    cin >> n;
+    for(int i=0; i<n; i++)
+        cin >> t[i] >> p[i];
+
+    cout << dp();
 }
