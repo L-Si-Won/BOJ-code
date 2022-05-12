@@ -1,20 +1,28 @@
 #include <iostream>
-#include <algorithm>
+#include <vector>
+#include <cstring>
 
 using namespace std;
 
-int n;
-int arr[301];
-int d[301];
+int n, m;
+vector<int> v[2000];
+bool visit[2000];
+bool ans=false;
 
-int dp(){
-    d[1]=arr[1];
-    d[2]=arr[1]+arr[2];
-    d[3]=max(arr[1]+arr[3], arr[2]+arr[3]);
+void dfs(int cnt, int cur){
+    if(cnt==4){
+        ans=true;
+        return ;
+    }
 
-    for(int i=3; i<n+1; i++)
-        d[i]=max(arr[i]+arr[i-1]+d[i-3], arr[i]+d[i-2]);
-    return d[n];
+    for(int i=0; i<v[cur].size(); i++){
+        if(visit[v[cur][i]]==false){
+            int nxt=v[cur][i];
+            visit[nxt]=true;
+            dfs(cnt+1, nxt);
+            visit[nxt]=false;
+        }
+    }
 }
 
 int main(){
@@ -22,8 +30,18 @@ int main(){
     cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-    cin >> n;
-    for(int i=1; i<n+1; i++)
-        cin >> arr[i];
-    cout << dp();
+    cin >> n >> m;
+    for(int i=0; i<m; i++){
+        int a, b;
+        cin >> a >> b;
+        v[a].push_back(b);
+        v[b].push_back(a);
+    }
+    for(int i=0; i<n; i++){
+        memset(visit, false, sizeof(bool)*2000);
+        visit[i]=true;
+        dfs(0, i);
+        if(ans) break;
+    }
+    cout << ans;
 }
