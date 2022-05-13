@@ -42,17 +42,16 @@ void bfs(int cur){
     }
 }
 
-bool isBipartiteGraph() {
-    for (int i = 1; i <= v; i++) {
-        int gsize = arr[i].size();
-        for (int j = 0; j < gsize; j++) {
-            int next = arr[i][j];
-            if (visit[i] == visit[next]) {
-                return 0;
+void check(){
+    for(int i=1; i<v+1; i++){
+        for(int j=0; j<arr[i].size(); j++){
+            if(visit[i]==visit[arr[i][j]]){
+                cout << "NO\n";
+                return ;
             }
         }
     }
-    return 1;
+    cout << "YES\n";
 }
 
 int main(){
@@ -74,8 +73,7 @@ int main(){
             if(!visit[j])
                 dfs(j);
 
-        if(isBipartiteGraph()) cout << "YES\n";
-        else cout << "NO\n";
+        check();
 
         for(int j=0; j<v+1; j++)
             arr[j].clear();
