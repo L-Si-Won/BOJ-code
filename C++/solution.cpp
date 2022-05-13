@@ -2,17 +2,17 @@
 #include <vector>
 #include <cstring>
 #include <queue>
+#include <algorithm>
 
 using namespace std;
 
-int n, m;
+int n, m, v;
 vector<int> arr[1001];
 bool visit[1001];
-int cnt;
 
 void dfs(int cur){
     visit[cur]=true;
-    //cout << cur << " ";
+    cout << cur << " ";
     for(int i=0; i<arr[cur].size(); i++){
         int next=arr[cur][i];
         if(visit[next]==false) dfs(next);
@@ -42,18 +42,17 @@ int main(){
     cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-    cin >> n >> m;
+    cin >> n >> m >> v;
     for(int i=1; i<m+1; i++){
         int a, b;
         cin >> a >> b;
         arr[a].push_back(b);
         arr[b].push_back(a);
     }
-    for(int i=1; i<n+1; i++){
-        if(visit[i]==false){
-            dfs(i);
-            cnt++;
-        }
-    }
-    cout << cnt;
+    for(int i=1; i<n+1; i++)
+        sort(arr[i].begin(), arr[i].end());
+    dfs(v);
+    cout << "\n";
+    memset(visit, false, sizeof(visit));
+    bfs(v);
 }
