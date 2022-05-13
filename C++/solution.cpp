@@ -6,16 +6,21 @@
 
 using namespace std;
 
-int n, m, v;
-vector<int> arr[1001];
-bool visit[1001];
+#define R 1
+#define B 2
+int v, e, k;
+vector<int> arr[20001];
+int visit[20001];
 
 void dfs(int cur){
-    visit[cur]=true;
-    cout << cur << " ";
+    if(!visit[cur]) visit[cur]=R;
     for(int i=0; i<arr[cur].size(); i++){
         int next=arr[cur][i];
-        if(visit[next]==false) dfs(next);
+        if(visit[next]==false){
+            if(visit[cur]==R) visit[next]=B;
+            else if(visit[cur]==B) visit[next]=R;
+            dfs(next);
+        }
     }
 }
 
@@ -37,22 +42,43 @@ void bfs(int cur){
     }
 }
 
+bool isBipartiteGraph() {
+    for (int i = 1; i <= v; i++) {
+        int gsize = arr[i].size();
+        for (int j = 0; j < gsize; j++) {
+            int next = arr[i][j];
+            if (visit[i] == visit[next]) {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
 int main(){
     cin.tie(NULL);
     cout.tie(NULL);
 	ios_base::sync_with_stdio(false);
 
-    cin >> n >> m >> v;
-    for(int i=1; i<m+1; i++){
-        int a, b;
-        cin >> a >> b;
-        arr[a].push_back(b);
-        arr[b].push_back(a);
+    cin >> k;
+    for(int i=0; i<k; i++){
+        cin >> v >> e;
+        for(int j=0; j<e; j++){
+            int a, b;
+            cin >> a >> b;
+            arr[a].push_back(b);
+            arr[b].push_back(a);
+        }
+        
+        for(int j=1; j<v+1; j++)
+            if(!visit[j])
+                dfs(j);
+
+        if(isBipartiteGraph()) cout << "YES\n";
+        else cout << "NO\n";
+
+        for(int j=0; j<v+1; j++)
+            arr[j].clear();
+        memset(visit, 0, sizeof(visit));
     }
-    for(int i=1; i<n+1; i++)
-        sort(arr[i].begin(), arr[i].end());
-    dfs(v);
-    cout << "\n";
-    memset(visit, false, sizeof(visit));
-    bfs(v);
 }
