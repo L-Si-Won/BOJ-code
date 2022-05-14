@@ -1,50 +1,56 @@
 #include <iostream>
 #include <algorithm>
+#include <queue>
 
 using namespace std;
 
-int w, h;
-int arr[52][52];
-bool visit[52][52];
-int land;
+int n, m;
+int arr[102][102];
+bool visit[102][102];
+int dist[102][102];
+queue<pair<int, int>> q;
 
-void dfs(int x, int y){
-    visit[x][y]=true;
-    int cnt=8;
-    while(cnt--){
-        switch(cnt){
-            case 7:
-                if(arr[x-1][y-1]==1 && visit[x-1][y-1]==false)
-                    dfs(x-1, y-1);
-                break;
-            case 6:
-                if(arr[x-1][y+1]==1 && visit[x-1][y+1]==false)
-                    dfs(x-1, y+1);
-                break;
-            case 5:
-                if(arr[x+1][y-1]==1 && visit[x+1][y-1]==false)
-                    dfs(x+1, y-1);
-                break;
-            case 4:
-                if(arr[x+1][y+1]==1 && visit[x+1][y+1]==false)
-                    dfs(x+1, y+1);
-                break;
-            case 3:
-                if(arr[x-1][y]==1 && visit[x-1][y]==false)
-                    dfs(x-1, y);
-                break;
-            case 2:
-                if(arr[x][y-1]==1 && visit[x][y-1]==false)
-                    dfs(x, y-1);
-                break;
-            case 1:
-                if(arr[x][y+1]==1 && visit[x][y+1]==false)
-                    dfs(x, y+1);
-                break;
-            case 0:
-                if(arr[x+1][y]==1 && visit[x+1][y]==false)
-                    dfs(x+1, y);
-                break;
+void bfs(int cur_x, int cur_y){
+    visit[cur_x][cur_y]=true;
+    q.push(make_pair(cur_x, cur_y));
+    dist[cur_x][cur_y]++;
+
+    while(!q.empty()){
+        int x=q.front().first;
+        int y=q.front().second;
+        q.pop();
+        int cnt=4;
+        while(cnt--){
+            switch(cnt){
+                case 3:
+                    if(arr[x][y+1]==1 && visit[x][y+1]==false){
+                        visit[x][y+1]=true;
+                        q.push(make_pair(x, y+1));
+                        dist[x][y+1]=dist[x][y]+1;
+                    }
+                    break;
+                case 2:
+                    if(arr[x+1][y]==1 && visit[x+1][y]==false){
+                        visit[x+1][y]=true;
+                        q.push(make_pair(x+1, y));
+                        dist[x+1][y]=dist[x][y]+1;
+                    }
+                    break;
+                case 1:
+                    if(arr[x-1][y]==1 && visit[x-1][y]==false){
+                        visit[x-1][y]=true;
+                        q.push(make_pair(x-1, y));
+                        dist[x-1][y]=dist[x][y]+1;
+                    }
+                    break;
+                case 0:
+                    if(arr[x][y-1]==1 && visit[x][y-1]==false){
+                        visit[x][y-1]=true;
+                        q.push(make_pair(x, y-1));
+                        dist[x][y-1]=dist[x][y]+1;
+                    }
+                    break;
+            }
         }
     }
 }
@@ -54,26 +60,13 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    while(1){
-        cin >> w >> h;
-        if(w==0 && h==0) break;
-
-        for(int i=1; i<h+1; i++)
-            for(int j=1; j<w+1; j++)
-                cin >> arr[i][j];
-
-        for(int i=1; i<h+1; i++){
-            for(int j=1; j<w+1; j++){
-                if(arr[i][j]==1 && visit[i][j]==false){
-                    dfs(i, j);
-                    land++;
-                }
-            }
-        }
-        cout << land << "\n";
-
-        land=0;
-        fill(&arr[0][0], &arr[51][52], 0);
-        fill(&visit[0][0], &visit[51][52], 0);
+    cin >> n >> m;
+    for(int i=1; i<n+1; i<i++){
+        string s;
+        cin >> s;
+        for(int j=1; j<m+1; j++)
+            arr[i][j]=s[j-1]-'0';
     }
+    bfs(1,1);
+    cout << dist[n][m];
 }
