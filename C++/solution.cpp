@@ -3,18 +3,32 @@
 
 using namespace std;
 
-int n;
-int arr[27][27];
-bool visit[27][27];
-int cont[1000];
-int count_idx;
+int w, h;
+int arr[52][52];
+bool visit[52][52];
+int land;
 
 void dfs(int x, int y){
     visit[x][y]=true;
-    cont[count_idx]++;
-    int cnt=4;
+    int cnt=8;
     while(cnt--){
         switch(cnt){
+            case 7:
+                if(arr[x-1][y-1]==1 && visit[x-1][y-1]==false)
+                    dfs(x-1, y-1);
+                break;
+            case 6:
+                if(arr[x-1][y+1]==1 && visit[x-1][y+1]==false)
+                    dfs(x-1, y+1);
+                break;
+            case 5:
+                if(arr[x+1][y-1]==1 && visit[x+1][y-1]==false)
+                    dfs(x+1, y-1);
+                break;
+            case 4:
+                if(arr[x+1][y+1]==1 && visit[x+1][y+1]==false)
+                    dfs(x+1, y+1);
+                break;
             case 3:
                 if(arr[x-1][y]==1 && visit[x-1][y]==false)
                     dfs(x-1, y);
@@ -40,24 +54,26 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n;
-    for(int i=1; i<n+1; i++){
-        string s;
-        cin >> s;
-        for(int j=1; j<n+1; j++)
-            arr[i][j]=s[j-1]-'0';
-    }
-    
-    for(int i=1; i<n+1; i++){
-        for(int j=1; j<n+1; j++){
-            if(visit[i][j]==false && arr[i][j]==1){
-                dfs(i, j);
-                count_idx++;
+    while(1){
+        cin >> w >> h;
+        if(w==0 && h==0) break;
+
+        for(int i=1; i<h+1; i++)
+            for(int j=1; j<w+1; j++)
+                cin >> arr[i][j];
+
+        for(int i=1; i<h+1; i++){
+            for(int j=1; j<w+1; j++){
+                if(arr[i][j]==1 && visit[i][j]==false){
+                    dfs(i, j);
+                    land++;
+                }
             }
         }
+        cout << land << "\n";
+
+        land=0;
+        fill(&arr[0][0], &arr[51][52], 0);
+        fill(&visit[0][0], &visit[51][52], 0);
     }
-    sort(cont, cont+count_idx);
-    cout << count_idx << "\n";
-    for(int i=0; i<count_idx; i++)
-        cout << cont[i] << "\n";
 }
