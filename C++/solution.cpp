@@ -1,39 +1,45 @@
 #include <iostream>
-#include <algorithm>
 #include <queue>
 
 using namespace std;
 
-int n, k;
-bool visit[400][400];
-int dist[400][400];
-int start[2];
-int arrive[2];
-int dx[]={1,2,2,1,-1,-2,-2,-1};
-int dy[]={2,1,-1,-2,-2,-1,1,2};
-queue<pair<int, int>> q;
+int n ,m;
+int arr[1000][1000];
+bool visit[1000][1000];
+int dist[1000][1000];
+queue<pair<int,int>> q;
+int dx[]={-1, 0, 1, 0};
+int dy[]={0, 1, 0, -1};
 
-void bfs(int cur_x, int cur_y){
-    q.push(make_pair(cur_x, cur_y));
-    visit[cur_x][cur_y]=true;
-
+void bfs(){
     while(!q.empty()){
         int x=q.front().first;
         int y=q.front().second;
         q.pop();
-        if(x==arrive[0] && y==arrive[1])
-            break;
-        
-        for(int i=0; i<8; i++){
+
+        for(int i=0; i<4; i++){
             int nx=x+dx[i];
             int ny=y+dy[i];
-            if(nx>=0 && ny>=0 && nx<n && ny<n && visit[nx][ny]==false){
-                q.push({nx,ny});
+            if(nx>=0 && ny>=0 && nx<n && ny<m &&visit[nx][ny]==false && arr[nx][ny]==0){
+                q.push({nx, ny});
                 visit[nx][ny]=true;
+                arr[nx][ny]=1;
                 dist[nx][ny]=dist[x][y]+1;
             }
         }
     }
+}
+
+int check_tomato(){
+    int MAX=0;
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            if(dist[i][j]==0)
+                return -1;
+            MAX=max(MAX, dist[i][j]);
+        }
+    }
+    return MAX-1;
 }
 
 int main(){
@@ -41,16 +47,30 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> k;
-    while(k--){
-        cin >> n;
-        cin >> start[0] >> start[1];
-        cin >> arrive[0] >> arrive[1];
-        bfs(start[0], start[1]);
-        cout << dist[arrive[0]][arrive[1]] << "\n";
+    cin >> m >> n;
+    for(int i=0; i<n; i++)
+        for(int j=0; j<m; j++)
+            cin >> arr[i][j];
 
-        while(!q.empty()) q.pop();
-        fill(&visit[0][0], &visit[399][400], 0);
-        fill(&dist[0][0], &dist[399][400], 0);
+    int check=0;
+    for(int i=0; i<n; i++)
+        for(int j=0; j<m; j++)
+            if(arr[i][j]==1) check++;
+    if(check==n*m){
+        cout << "0";
+        exit(0);
     }
+
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            if(arr[i][j]==-1) dist[i][j]=-1;
+            if(visit[i][j]==false && arr[i][j]==1){
+                q.push({i, j});
+                visit[i][j]=true;
+                dist[i][j]=1;
+            }
+        }
+    }
+    bfs();
+    cout << check_tomato();
 }
