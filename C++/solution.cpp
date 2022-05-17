@@ -1,32 +1,63 @@
 #include <iostream>
+#include <vector>
+#include <cstring>
+#include <queue>
 
 using namespace std;
 
-int n ,m;
-char arr[50][50];
-bool visit[50][50];
-int dx[]={-1, 0, 1, 0};
-int dy[]={0, 1, 0, -1};
-int dist[50][50];
+int n;
+vector<int> edge[3001];
+bool visit[3001];
+bool cycle[3001];
+int dist[3001];
+int pre[3001];
+bool find_cycle;
 
-bool dfs(int cur_x, int cur_y, char ch, int cnt){
-    if(visit[cur_x][cur_y]==true){
-        if(cnt-dist[cur_x][cur_y]>=4)
-            return true;
-        else
-            return false;
-    }
-    visit[cur_x][cur_y]=true;
-    dist[cur_x][cur_y]=cnt;
-    for(int i=0; i<4; i++){
-        int nx=cur_x+dx[i];
-        int ny=cur_y+dy[i];
-        if(nx>=0 && ny>=0 && nx<n && ny<m && arr[nx][ny]==ch){
-            if(dfs(nx, ny, ch, cnt+1))
-                return true;
+void bfs(){
+    queue<pair<int, int>> q;
+    for(int i=1; i<n+1; i++){
+        if(cycle[i]==true){
+            q.push({i, 0});
+            visit[i]=true;
         }
     }
-    return false;
+    while(!q.empty()){
+        int cur=q.front().first;
+        int dis=q.front().second;
+        q.pop();
+        visit[cur]=true;
+
+        for(int i=0; i<edge[cur].size(); i++){
+            int next=edge[cur][i];
+            if(visit[next]==false){
+                dist[next]=dis+1;
+                q.push({next, dist[next]});
+            }
+        }
+    }
+}
+
+void check_cycle(int cur){
+    visit[cur]=true;
+    for(int i=0; i<edge[cur].size(); i++){
+        if(find_cycle) return;
+        int next=edge[cur][i];
+        if(visit[next]==true){
+            if(pre[cur]!=next){
+                cycle[cur]=true;
+                find_cycle=true;
+                while(cur != next){
+                    cycle[pre[cur]]=true;
+                    cur=pre[cur];
+                }
+                return;
+            }
+        }
+        else{
+            pre[next]=cur;
+            check_cycle(next);
+        }
+    }
 }
 
 int main(){
@@ -34,23 +65,16 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n >> m;
-    for(int i=0; i<n; i++){
-        string s;
-        cin >> s;
-        for(int j=0; j<m; j++)
-            arr[i][j]=s[j];
+    cin >> n;
+    for(int i=1; i<n+1; i++){
+        int a, b;
+        cin >> a >> b;
+        edge[a].push_back(b);
+        edge[b].push_back(a);
     }
-
-    for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            if(visit[i][j]==false){
-                if(dfs(i, j, arr[i][j], 0)){
-                    cout << "Yes";
-                    return 0;
-                }
-            }
-        }
-    }
-    cout << "No";
+    check_cycle(1);
+    memset(visit, false, sizeof(bool)*3001);
+    bfs();
+    for(int i=1; i<n+1; i++)
+        cout << dist[i] << " ";
 }
