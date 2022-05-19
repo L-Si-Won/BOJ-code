@@ -7,17 +7,24 @@ using namespace std;
 int n, k;
 queue<pair<int, int>> q;
 bool visit[100001];
+int cnt[100001];
+int temp=2e9;
 
 void bfs(int start){
     q.push({start, 0});
-    visit[start]=true;
     while(!q.empty()){
         int cur=q.front().first;
         int cur_sec=q.front().second;
         if(cur==k){
-            cout << cur_sec;
-            exit(0);
+            if(temp<cur_sec){
+                cout << temp << "\n";
+                cout << cnt[temp];
+                exit(0);
+            }
+            temp=cur_sec;
+            cnt[temp]++;
         }
+        visit[cur]=true;
         q.pop();
         for(int i=0; i<3; i++){
             if(i==0){
@@ -25,7 +32,6 @@ void bfs(int start){
                     int next=cur+1;
                     int next_sec=cur_sec+1;
                     if(visit[next]==false){
-                        visit[next]=true;
                         q.push({next, next_sec});
                     }
                 }
@@ -35,7 +41,6 @@ void bfs(int start){
                     int next=cur-1;
                     int next_sec=cur_sec+1;
                     if(visit[next]==false){
-                        visit[next]=true;
                         q.push({next, next_sec});
                     }
                 }
@@ -45,7 +50,6 @@ void bfs(int start){
                     int next=cur*2;
                     int next_sec=cur_sec+1;
                     if(visit[next]==false){
-                        visit[next]=true;
                         q.push({next, next_sec});
                     }
                 }
@@ -60,5 +64,11 @@ int main(){
     ios_base::sync_with_stdio(false);
 
     cin >> n >> k;
+    if(n==k){
+        cout << "0\n1";
+        return 0;
+    }
     bfs(n);
+    cout << temp << "\n";
+    cout << cnt[temp];
 }
