@@ -8,23 +8,25 @@ int n, k;
 queue<pair<int, int>> q;
 bool visit[100001];
 int cnt[100001];
-int temp=2e9;
+int parent[100001];
+vector<int> v;
 
 void bfs(int start){
+    visit[start]=true;
     q.push({start, 0});
     while(!q.empty()){
         int cur=q.front().first;
         int cur_sec=q.front().second;
         if(cur==k){
-            if(temp<cur_sec){
-                cout << temp << "\n";
-                cout << cnt[temp];
-                exit(0);
+            int path=cur;
+            while(path!=n){
+                v.push_back(path);
+                path=parent[path];
             }
-            temp=cur_sec;
-            cnt[temp]++;
+            v.push_back(n);
+            cout << cur_sec << "\n";
+            break;
         }
-        visit[cur]=true;
         q.pop();
         for(int i=0; i<3; i++){
             if(i==0){
@@ -32,7 +34,9 @@ void bfs(int start){
                     int next=cur+1;
                     int next_sec=cur_sec+1;
                     if(visit[next]==false){
+                        visit[next]=true;
                         q.push({next, next_sec});
+                        parent[next]=cur;
                     }
                 }
             }
@@ -41,7 +45,9 @@ void bfs(int start){
                     int next=cur-1;
                     int next_sec=cur_sec+1;
                     if(visit[next]==false){
+                        visit[next]=true;
                         q.push({next, next_sec});
+                        parent[next]=cur;
                     }
                 }
             }
@@ -50,7 +56,9 @@ void bfs(int start){
                     int next=cur*2;
                     int next_sec=cur_sec+1;
                     if(visit[next]==false){
+                        visit[next]=true;
                         q.push({next, next_sec});
+                        parent[next]=cur;
                     }
                 }
             }
@@ -65,10 +73,11 @@ int main(){
 
     cin >> n >> k;
     if(n==k){
-        cout << "0\n1";
+        cout << "0\n" << n;
         return 0;
     }
     bfs(n);
-    cout << temp << "\n";
-    cout << cnt[temp];
+    for(int i=v.size()-1; i>=0; i--){
+        cout << v[i] << " ";
+    }
 }
