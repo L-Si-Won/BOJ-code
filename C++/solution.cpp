@@ -1,62 +1,45 @@
-#include <iostream>
-#include <queue>
-#include <vector>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-vector<int> v[100001];
-int ans[100001];
-queue<int> q;
-int n;
-bool visit[100001];
-
-void bfs(){
-    visit[1]=true;
-    q.push(1);
-    int idx=2;
-
-    while(!q.empty()){
-        int cur=q.front();
-        q.pop();
-
-        int cnt=0;
-        for(int i=0; i<v[cur].size(); i++){
-            if(visit[v[cur][i]]==false){
-                visit[v[cur][i]]=true;
-                cnt++;
-            }
-        }
-
-        for(int i=idx; i<idx+cnt; i++){
-            if(visit[ans[i]]==false){
-                cout << "0";
-                exit(0);
-            }
-            q.push(ans[i]);
-        }
-        idx+=cnt;
-    }
+int a[100001]={0, };
+bool cmp(int t1, int t2){ // 정렬 기준
+  return a[t1]<a[t2];
 }
 
-int main(){
-    cin.tie(NULL);
-    cout.tie(NULL);
-    ios_base::sync_with_stdio(false);
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
 
-    cin >> n;
-    for(int i=0; i<n-1; i++){
-        int a, b;
-        cin >> a >> b;
-        v[a].push_back(b);
-        v[b].push_back(a);
+  vector<int> v[100001]; int ch[100001]={0, };
+  vector<int> res; vector<int> cp;
+
+  int n; cin>>n;
+  for(int i=0; i<n-1; i++){
+    int t1, t2; cin>>t1>>t2;
+    v[t1].emplace_back(t2); v[t2].emplace_back(t1);
+  }
+  for(int i=1; i<=n; i++){
+    int tmp; cin>>tmp; a[tmp]=i;
+    cp.emplace_back(tmp);
+  }
+  if(a[1]!=1) { cout<<"0"; return 0; } // 예외처리
+
+  for(int i=1; i<=n; i++) sort(v[i].begin(), v[i].end(), cmp);
+  queue<int> q;
+  ch[1]=1; q.push(1);
+
+  while(!q.empty()){
+    int p = q.front(); q.pop();
+    res.emplace_back(p);
+
+    for(int i=0; i<v[p].size(); i++){
+      if(ch[v[p][i]]==0){
+        ch[v[p][i]]=1; q.push(v[p][i]);
+      }
     }
-    for(int i=1; i<n+1; i++){
-        cin >> ans[i];
-    }
-    if(ans[1]!=1){
-        cout << "0";
-        return 0;
-    }
-    bfs();
-    cout << "1";
+  } // while문 끝
+
+  if(cp==res) cout<<"1";
+  else cout<<"0";
+  return 0;
 }
