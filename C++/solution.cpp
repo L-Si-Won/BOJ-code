@@ -1,68 +1,40 @@
 #include <iostream>
-#include <vector>
 #include <queue>
+#include <vector>
 
 using namespace std;
 
-int n, k;
-queue<pair<int, int>> q;
+vector<int> v[100001];
+int ans[100001];
+queue<int> q;
+int n;
 bool visit[100001];
-int cnt[100001];
-int parent[100001];
-vector<int> v;
 
-void bfs(int start){
-    visit[start]=true;
-    q.push({start, 0});
+void bfs(){
+    visit[1]=true;
+    q.push(1);
+    int idx=2;
+
     while(!q.empty()){
-        int cur=q.front().first;
-        int cur_sec=q.front().second;
-        if(cur==k){
-            int path=cur;
-            while(path!=n){
-                v.push_back(path);
-                path=parent[path];
-            }
-            v.push_back(n);
-            cout << cur_sec << "\n";
-            break;
-        }
+        int cur=q.front();
         q.pop();
-        for(int i=0; i<3; i++){
-            if(i==0){
-                if(cur+1<=100000){
-                    int next=cur+1;
-                    int next_sec=cur_sec+1;
-                    if(visit[next]==false){
-                        visit[next]=true;
-                        q.push({next, next_sec});
-                        parent[next]=cur;
-                    }
-                }
-            }
-            if(i==1){
-                if(cur-1>=0){
-                    int next=cur-1;
-                    int next_sec=cur_sec+1;
-                    if(visit[next]==false){
-                        visit[next]=true;
-                        q.push({next, next_sec});
-                        parent[next]=cur;
-                    }
-                }
-            }
-            if(i==2){
-                if(cur*2<=100000){
-                    int next=cur*2;
-                    int next_sec=cur_sec+1;
-                    if(visit[next]==false){
-                        visit[next]=true;
-                        q.push({next, next_sec});
-                        parent[next]=cur;
-                    }
-                }
+
+        int cnt=0;
+        for(int i=0; i<v[cur].size(); i++){
+            if(visit[v[cur][i]]==false){
+                visit[v[cur][i]]=true;
+                cnt++;
             }
         }
+
+        for(int i=idx; i<idx+cnt; i++){
+            if(visit[ans[i]]==false){
+                cout << "0";
+                exit(0);
+            }
+            q.push(ans[i]);
+        }
+        idx+=cnt;
     }
 }
 
@@ -71,13 +43,20 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n >> k;
-    if(n==k){
-        cout << "0\n" << n;
+    cin >> n;
+    for(int i=0; i<n-1; i++){
+        int a, b;
+        cin >> a >> b;
+        v[a].push_back(b);
+        v[b].push_back(a);
+    }
+    for(int i=1; i<n+1; i++){
+        cin >> ans[i];
+    }
+    if(ans[1]!=1){
+        cout << "0";
         return 0;
     }
-    bfs(n);
-    for(int i=v.size()-1; i>=0; i--){
-        cout << v[i] << " ";
-    }
+    bfs();
+    cout << "1";
 }
