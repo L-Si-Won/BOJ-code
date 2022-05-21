@@ -1,45 +1,60 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
 using namespace std;
 
-int a[100001]={0, };
-bool cmp(int t1, int t2){ // 정렬 기준
-  return a[t1]<a[t2];
+int n;
+bool visit[100001];
+int ans[100001];
+vector<int> v[100001];
+int dfs_ans[100001];
+int cnt=1;
+int order[100001];
+
+bool comp(int i, int j){
+  return order[i] < order[j];
 }
 
-int main() {
-  ios_base::sync_with_stdio(false);
-  cin.tie(nullptr);
-
-  vector<int> v[100001]; int ch[100001]={0, };
-  vector<int> res; vector<int> cp;
-
-  int n; cin>>n;
-  for(int i=0; i<n-1; i++){
-    int t1, t2; cin>>t1>>t2;
-    v[t1].emplace_back(t2); v[t2].emplace_back(t1);
-  }
-  for(int i=1; i<=n; i++){
-    int tmp; cin>>tmp; a[tmp]=i;
-    cp.emplace_back(tmp);
-  }
-  if(a[1]!=1) { cout<<"0"; return 0; } // 예외처리
-
-  for(int i=1; i<=n; i++) sort(v[i].begin(), v[i].end(), cmp);
-  queue<int> q;
-  ch[1]=1; q.push(1);
-
-  while(!q.empty()){
-    int p = q.front(); q.pop();
-    res.emplace_back(p);
-
-    for(int i=0; i<v[p].size(); i++){
-      if(ch[v[p][i]]==0){
-        ch[v[p][i]]=1; q.push(v[p][i]);
-      }
+void dfs(int cur){
+  visit[cur]=true;
+  dfs_ans[cnt++]=cur;
+  for(int i=0; i<v[cur].size(); i++){
+    int next=v[cur][i];
+    if(visit[next]==false){
+      dfs(next);
     }
-  } // while문 끝
+  }
+}
 
-  if(cp==res) cout<<"1";
-  else cout<<"0";
-  return 0;
+int main(){
+  cin.tie(NULL);
+  cout.tie(NULL);
+  ios_base::sync_with_stdio(false);
+
+  cin >> n;
+  for(int i=0; i<n-1; i++){
+    int a, b;
+    cin >> a >> b;
+    v[a].push_back(b);
+    v[b].push_back(a);
+  }
+  for(int i=1; i<n+1; i++){
+    cin >> ans[i];
+    order[ans[i]]=i;
+  }
+  if(ans[1]!=1){
+    cout << "0";
+    return 0;
+  }
+  for(int i=1; i<n+1; i++)
+    sort(v[i].begin(), v[i].end(), comp);
+  dfs(1);
+  for(int i=1; i<n+1; i++){
+    if(ans[i]!=dfs_ans[i]){
+      cout << "0";
+      return 0;
+    }
+  }
+  cout << "1";
 }
