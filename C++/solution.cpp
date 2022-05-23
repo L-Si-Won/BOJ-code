@@ -1,79 +1,55 @@
 #include <iostream>
 #include <queue>
-#include <cstring>
-#include <algorithm>
+#include <tuple>
+#include <vector>
 
 using namespace std;
 
 int n;
-int map[100][100];
-bool visit[100][100];
-int dx[]={0, 0, 1, -1};
-int dy[]={1, -1, 0, 0};
-int map_order_cnt=1;
-int MIN=2e9;
+int clip;
+int scrn=1;
+queue<tuple<int, int, int>> q; //{scrn, clip, time}
+bool visit[1001][1001];
 
-void map_order(int x, int y){
-  queue<pair<int, int>> q;
-  q.push({x, y});
-  visit[x][y]=true;
-  map[x][y]=map_order_cnt;
+void solve(){
+  q.push({1, 0, 0});
+  visit[1][0]=true;
 
   while(!q.empty()){
-    int cur_x=q.front().first;
-    int cur_y=q.front().second;
+    int s=get<0>(q.front());
+    int c=get<1>(q.front());
+    int t=get<2>(q.front());
     q.pop();
 
-    for(int i=0; i<4; i++){
-      int nx=cur_x+dx[i];
-      int ny=cur_y+dy[i];
-      if(nx>=0 && ny>=0 && ny<n && nx<n){
-        if(visit[nx][ny]==false && map[nx][ny]==-1){
-          visit[nx][ny]=true;
-          map[nx][ny]=map_order_cnt;
-          q.push({nx, ny});
+    if(s==n){
+      cout << t;
+      exit(0);
+    }
+    
+    for(int i=0; i<3; i++){
+      if(i==0){ //화면이모티콘을 클립보드에 복사저장
+        if(visit[s][s]==false){
+          q.push({s, s, t+1});
+          visit[s][s]=true;
         }
       }
-    }
-  }
-  map_order_cnt++;
-}
-
-void solve(int order){
-  queue<pair<int, int>> q;
-  for(int i=0; i<n; i++){
-    for(int j=0; j<n; j++){
-      if(map[i][j]==order){
-        visit[i][j]=true;
-        q.push({i, j});
-      }
-    }
-  }
-
-  int result=0;
-  while(!q.empty()){
-    int size=q.size();
-    for(int i=0; i<size; i++){
-      int x=q.front().first;
-      int y=q.front().second;
-      q.pop();
-
-      for(int j=0; j<4; j++){
-        int nx=x+dx[j];
-        int ny=y+dy[j];
-        if(nx>=0 && ny>=0 && nx<n && ny<n){
-          if(map[nx][ny]!=0 && map[nx][ny]!=order){
-            MIN=min(MIN, result);
-            return ;
+      else if(i==1){ //클립보드이모티콘을 화면에 붙여넣기
+        if(s+c<=1000){
+          if(visit[s+c][c]==false){
+            q.push({s+c, c, t+1});
+            visit[s+c][c]=true;
           }
-          else if(map[nx][ny]==0 && visit[nx][ny]==false){
-            visit[nx][ny]=true;
-            q.push({nx, ny});
+        }
+      }
+      else if(i==2){ //화면이모티콘 하나 삭제
+        if(s-1>=0){
+          if(visit[s-1][c]==false){
+            q.push({s-1, c, t+1});
+            visit[s-1][c]=true;
           }
         }
       }
     }
-    result++;
   }
 }
 
@@ -83,22 +59,5 @@ int main(){
   ios_base::sync_with_stdio(false);
 
   cin >> n;
-  for(int i=0; i<n; i++){
-    for(int j=0; j<n; j++){
-      cin >> map[i][j];
-      if(map[i][j]==1)
-        map[i][j]=-1;
-    }
-  }
-
-  for(int i=0; i<n; i++)
-    for(int j=0; j<n; j++)
-      if(map[i][j]==-1 && visit[i][j]==false)
-        map_order(i, j);
-  
-  for(int i=1; i<map_order_cnt; i++){
-    memset(visit, false, sizeof(visit));
-    solve(i);
-  }
-  cout << MIN;
+  solve();
 }
