@@ -1,53 +1,45 @@
 #include <iostream>
 #include <queue>
-#include <tuple>
-#include <vector>
 
 using namespace std;
 
-int n;
-int clip;
-int scrn=1;
-queue<tuple<int, int, int>> q; //{scrn, clip, time}
-bool visit[1001][1001];
+int n, k;
+bool visit[200001];
+int visit_time[100001];
 
-void solve(){
-  q.push({1, 0, 0});
-  visit[1][0]=true;
+void bfs(){
+  queue<int> q;
+  q.push(n);
+  visit[n]=true;
 
   while(!q.empty()){
-    int s=get<0>(q.front());
-    int c=get<1>(q.front());
-    int t=get<2>(q.front());
+    int cur=q.front();
     q.pop();
 
-    if(s==n){
-      cout << t;
+    if(cur==k){
+      cout << visit_time[k];
       exit(0);
     }
-    
+
     for(int i=0; i<3; i++){
-      if(i==0){ //화면이모티콘을 클립보드에 복사저장
-        if(visit[s][s]==false){
-          q.push({s, s, t+1});
-          visit[s][s]=true;
-        }
+      int next, time;
+      if(i==0){
+        next=cur*2;
+        time=0;
       }
-      else if(i==1){ //클립보드이모티콘을 화면에 붙여넣기
-        if(s+c<=1000){
-          if(visit[s+c][c]==false){
-            q.push({s+c, c, t+1});
-            visit[s+c][c]=true;
-          }
-        }
+      else if(i==1){
+        next=cur+1;
+        time=1;
       }
-      else if(i==2){ //화면이모티콘 하나 삭제
-        if(s-1>=0){
-          if(visit[s-1][c]==false){
-            q.push({s-1, c, t+1});
-            visit[s-1][c]=true;
-          }
-        }
+      else if(i==2){
+        next=cur-1;
+        time=1;
+      }
+      
+      if(next>=0 && next<=100000 && (visit[next]==false || visit_time[next]>visit_time[cur]+time)){
+        q.push(next);
+        visit[next]=true;
+        visit_time[next]=visit_time[cur]+time;
       }
     }
   }
@@ -58,6 +50,6 @@ int main(){
   cout.tie(NULL);
   ios_base::sync_with_stdio(false);
 
-  cin >> n;
-  solve();
+  cin >> n >> k;
+  bfs();
 }
