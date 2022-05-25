@@ -3,43 +3,47 @@
 
 using namespace std;
 
-int n, k;
-bool visit[200001];
-int visit_time[100001];
+int n, m;
+int arr[102][102];
+bool visit[102][102];
+int dp[102][102];
+int dx[]={0, 0, 1, -1};
+int dy[]={-1, 1, 0, 0};
+int ans=2e9;
 
 void bfs(){
-  queue<int> q;
-  q.push(n);
-  visit[n]=true;
-
+  queue<pair<int, int>> q;
+  q.push({1, 1});
+  visit[1][1]=true;
+  
   while(!q.empty()){
-    int cur=q.front();
+    int x=q.front().first; //열
+    int y=q.front().second; //행
     q.pop();
 
-    if(cur==k){
-      cout << visit_time[k];
-      exit(0);
+    if(x==n && y==m){
+      ans=min(ans, dp[m][n]);
     }
 
-    for(int i=0; i<3; i++){
-      int next, time;
-      if(i==0){
-        next=cur*2;
-        time=0;
-      }
-      else if(i==1){
-        next=cur+1;
-        time=1;
-      }
-      else if(i==2){
-        next=cur-1;
-        time=1;
-      }
-      
-      if(next>=0 && next<=100000 && (visit[next]==false || visit_time[next]>visit_time[cur]+time)){
-        q.push(next);
-        visit[next]=true;
-        visit_time[next]=visit_time[cur]+time;
+    for(int i=0; i<4; i++){
+      int nx=x+dx[i];
+      int ny=y+dy[i];
+      int cur_dp=dp[y][x];
+      if(nx>=1 && ny>=1 && nx<=n && ny<=m){
+        if(arr[ny][nx]==0){
+          if(visit[ny][nx]==false || dp[ny][nx]>cur_dp){
+            visit[ny][nx]=true;
+            dp[ny][nx]=cur_dp;
+            q.push({nx, ny});
+          }
+        }
+        else if(arr[ny][nx]==1){
+          if(visit[ny][nx]==false || dp[ny][nx]>cur_dp+1){
+            visit[ny][nx]=true;
+            dp[ny][nx]=cur_dp+1;
+            q.push({nx, ny});
+          }
+        }
       }
     }
   }
@@ -50,6 +54,13 @@ int main(){
   cout.tie(NULL);
   ios_base::sync_with_stdio(false);
 
-  cin >> n >> k;
+  cin >> n >> m; //n=열  m=행
+  for(int i=1; i<=m; i++){
+    string s;
+    cin >> s;
+    for(int j=0; j<n; j++)
+      arr[i][j+1]=s[j]-'0';
+  }
   bfs();
+  cout << ans;
 }
