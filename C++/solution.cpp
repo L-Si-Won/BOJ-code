@@ -1,66 +1,49 @@
 #include <iostream>
-#include <queue>
 
 using namespace std;
 
-int n, m;
-int arr[102][102];
-bool visit[102][102];
-int dp[102][102];
-int dx[]={0, 0, 1, -1};
-int dy[]={-1, 1, 0, 0};
-int ans=2e9;
+int n;
 
-void bfs(){
-  queue<pair<int, int>> q;
-  q.push({1, 1});
-  visit[1][1]=true;
-  
-  while(!q.empty()){
-    int x=q.front().first; //열
-    int y=q.front().second; //행
-    q.pop();
+struct node{
+    char left;
+    char right;
+};
+node arr[27];
 
-    if(x==n && y==m){
-      ans=min(ans, dp[m][n]);
-    }
+void pre(char c){
+    if(c=='.') return;
+    cout << c;
+    pre(arr[c-'A'].left);
+    pre(arr[c-'A'].right);
+}
 
-    for(int i=0; i<4; i++){
-      int nx=x+dx[i];
-      int ny=y+dy[i];
-      int cur_dp=dp[y][x];
-      if(nx>=1 && ny>=1 && nx<=n && ny<=m){
-        if(arr[ny][nx]==0){
-          if(visit[ny][nx]==false || dp[ny][nx]>cur_dp){
-            visit[ny][nx]=true;
-            dp[ny][nx]=cur_dp;
-            q.push({nx, ny});
-          }
-        }
-        else if(arr[ny][nx]==1){
-          if(visit[ny][nx]==false || dp[ny][nx]>cur_dp+1){
-            visit[ny][nx]=true;
-            dp[ny][nx]=cur_dp+1;
-            q.push({nx, ny});
-          }
-        }
-      }
-    }
-  }
+void in(char c){
+    if(c=='.') return;
+    in(arr[c-'A'].left);
+    cout << c;
+    in(arr[c-'A'].right);
+}
+
+void pos(char c){
+    if(c=='.') return;
+    pos(arr[c-'A'].left);
+    pos(arr[c-'A'].right);
+    cout << c;
 }
 
 int main(){
-  cin.tie(NULL);
-  cout.tie(NULL);
-  ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
 
-  cin >> n >> m; //n=열  m=행
-  for(int i=1; i<=m; i++){
-    string s;
-    cin >> s;
-    for(int j=0; j<n; j++)
-      arr[i][j+1]=s[j]-'0';
-  }
-  bfs();
-  cout << ans;
+    cin >> n;
+    for(int i=0; i<n; i++){
+        char a, b, c;
+        cin >> a >> b >> c;
+        arr[a-'A'].left=b;
+        arr[a-'A'].right=c;
+    }
+    pre('A'); cout << "\n";
+    in('A'); cout << "\n";
+    pos('A');
 }
