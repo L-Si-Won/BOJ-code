@@ -1,34 +1,54 @@
 #include <iostream>
+#include <queue>
 
 using namespace std;
 
 int n;
+int root;
+int col[10001];
+int level[10001];
+int order=1;
+int real[10001];
+pair<int, int> ans; //레벨, 너비
 
 struct node{
-    char left;
-    char right;
+    int par=0;
+    int left;
+    int right;
 };
-node arr[27];
+node arr[10001];
 
-void pre(char c){
-    if(c=='.') return;
-    cout << c;
-    pre(arr[c-'A'].left);
-    pre(arr[c-'A'].right);
+void LVR(int start, int l){
+    if(start==-1) return;
+    LVR(arr[start].left, l+1);
+    col[order]=start;
+    real[start]=order++;
+    level[start]=l;
+    LVR(arr[start].right, l+1);
 }
 
-void in(char c){
-    if(c=='.') return;
-    in(arr[c-'A'].left);
-    cout << c;
-    in(arr[c-'A'].right);
+void solve(){
+    for(int i=1; i<=n; i++){ //레벨 검사
+        int MAX=-1, MIN=2e9;
+        for(int j=1; j<=n; j++){ //해당레벨끼리 검사
+            if(level[j]==i){
+                MAX=max(MAX, real[j]);
+                MIN=min(MIN, real[j]);
+            }
+        }
+        if(MAX==-1) return;
+        if(ans.second < MAX-MIN+1){ //루트가 정답일 때도 처리
+            ans.first=i;
+            ans.second=MAX-MIN+1;
+        }
+    }
 }
 
-void pos(char c){
-    if(c=='.') return;
-    pos(arr[c-'A'].left);
-    pos(arr[c-'A'].right);
-    cout << c;
+void find_root(){
+    for(int i=1; i<=n; i++){
+        if(arr[i].par==0)
+            root=i;
+    }
 }
 
 int main(){
@@ -37,13 +57,16 @@ int main(){
     ios_base::sync_with_stdio(false);
 
     cin >> n;
-    for(int i=0; i<n; i++){
-        char a, b, c;
+    for(int i=1; i<=n; i++){ //첫번째로 받는다고 루트가 아님, 부모가없는것이 루트
+        int a, b, c;
         cin >> a >> b >> c;
-        arr[a-'A'].left=b;
-        arr[a-'A'].right=c;
+        arr[a].left=b;
+        arr[a].right=c;
+        arr[b].par=a;
+        arr[c].par=a;
     }
-    pre('A'); cout << "\n";
-    in('A'); cout << "\n";
-    pos('A');
+    find_root();
+    LVR(root, 1);
+    solve();
+    cout << ans.first << " " << ans.second;
 }
