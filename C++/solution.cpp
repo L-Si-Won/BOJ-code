@@ -29,15 +29,11 @@ int main(){
     ios_base::sync_with_stdio(false);
 
     cin >> n;
-    for(int i=0; i<n; i++){
+    for(int i=0; i<n-1; i++){
         int a, b, c;
-        cin >> a;
-        while(1){
-            cin >> b;
-            if(b==-1) break;
-            cin >> c;
-            v[a].push_back({b, c});
-        }
+        cin >> a >> b >> c;
+        v[a].push_back({b, c});
+        v[b].push_back({a, c});
     }
     dfs(1, 0);
     temp_ans=0;
