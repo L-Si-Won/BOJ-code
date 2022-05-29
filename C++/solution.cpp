@@ -1,30 +1,24 @@
 #include <iostream>
-#include <queue>
+#include <cstring>
 #include <vector>
 
 using namespace std;
 
 int n;
-vector<int> v[100001];
-int parent[100001];
+vector<pair<int, int>> v[100001]; //연결된 정점, 거리
 bool visit[100001];
+int temp_ans;
+int far_point;
 
-void solve(){
-    visit[1]=true;
-    queue<int> q;
-    q.push(1);
-
-    while(!q.empty()){
-        int cur=q.front();
-        q.pop();
-        
-        for(int i=0; i<v[cur].size(); i++){
-            int next=v[cur][i];
-            if(visit[next]==false){
-                q.push(next);
-                visit[next]=true;
-                parent[next]=cur;
-            }
+void dfs(int cur, int dist){
+    visit[cur]=true;
+    if(temp_ans < dist){
+        temp_ans = dist;
+        far_point=cur;
+    }
+    for(int i=0; i<v[cur].size(); i++){
+        if(visit[v[cur][i].first]==false){
+            dfs(v[cur][i].first, dist+v[cur][i].second);
         }
     }
 }
@@ -35,14 +29,19 @@ int main(){
     ios_base::sync_with_stdio(false);
 
     cin >> n;
-    for(int i=0; i<n-1; i++){
-        int a, b;
-        cin >> a >> b;
-        v[a].push_back(b);
-        v[b].push_back(a);
+    for(int i=0; i<n; i++){
+        int a, b, c;
+        cin >> a;
+        while(1){
+            cin >> b;
+            if(b==-1) break;
+            cin >> c;
+            v[a].push_back({b, c});
+        }
     }
-    solve();
-    for(int i=2; i<=n; i++){
-        cout << parent[i] << "\n";
-    }
+    dfs(1, 0);
+    temp_ans=0;
+    memset(visit, false, sizeof(visit));
+    dfs(far_point, 0);
+    cout << temp_ans;
 }
