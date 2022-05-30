@@ -1,24 +1,21 @@
 #include <iostream>
-#include <cstring>
 #include <vector>
 
 using namespace std;
 
-int n;
-vector<pair<int, int>> v[100001]; //연결된 정점, 거리
-bool visit[100001];
-int temp_ans;
-int far_point;
+int n, m1, m2, k;
+vector<int> v[101];
+bool visit[101];
 
 void dfs(int cur, int dist){
     visit[cur]=true;
-    if(temp_ans < dist){
-        temp_ans = dist;
-        far_point=cur;
+    if(cur==m2){
+        cout << dist;
+        exit(0);
     }
     for(int i=0; i<v[cur].size(); i++){
-        if(visit[v[cur][i].first]==false){
-            dfs(v[cur][i].first, dist+v[cur][i].second);
+        if(visit[v[cur][i]]==false){
+            dfs(v[cur][i], dist+1);
         }
     }
 }
@@ -28,16 +25,13 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n;
-    for(int i=0; i<n-1; i++){
-        int a, b, c;
-        cin >> a >> b >> c;
-        v[a].push_back({b, c});
-        v[b].push_back({a, c});
+    cin >> n >> m1 >> m2 >> k;
+    for(int i=0; i<k; i++){
+        int a, b;
+        cin >> a >> b;
+        v[a].push_back(b);
+        v[b].push_back(a);
     }
-    dfs(1, 0);
-    temp_ans=0;
-    memset(visit, false, sizeof(visit));
-    dfs(far_point, 0);
-    cout << temp_ans;
+    dfs(m1, 0);
+    cout << "-1";
 }
