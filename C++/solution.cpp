@@ -1,94 +1,49 @@
 #include <iostream>
 #include <queue>
-#include <tuple>
 
 using namespace std;
 
-int n, m ,h; //세로 가로 높이
-int arr[100][100][100];
-int dp[100][100][100];
-bool visit[100][100][100];
-int dm[]={1, -1, 0, 0, 0, 0}; //가로이동
-int dn[]={0, 0, 1, -1, 0, 0}; //세로이동
-int dh[]={0, 0, 0, 0, 1, -1}; //높이이동
+int f, s, g, u, d;
+bool visit[1000001];
+int dp[1000001];
 
 void solve(){
-    queue<tuple<int, int, int>> q;
-    for(int i=0; i<h; i++){ //토마토가 들어있는 곳은 전부 큐에 넣고 시작
-        for(int j=0; j<n; j++){
-            for(int k=0; k<m; k++){
-                if(arr[i][j][k]==1){
-                    q.push({i, j, k});
-                    visit[i][j][k]=true;
-                }
-            }
-        }
-    }
+    queue<int> q;
+    q.push(s);
+    visit[s]=true;
 
     while(!q.empty()){
-        int cm=get<2>(q.front());
-        int cn=get<1>(q.front());
-        int ch=get<0>(q.front());
+        int cur=q.front();
         q.pop();
 
-        for(int i=0; i<6; i++){
-            int nm=cm+dm[i];
-            int nn=cn+dn[i];
-            int nh=ch+dh[i];
-            if(nm>=0 && nn>=0 && nh>=0 && nm<m && nn<n && nh<h){
-                if(visit[nh][nn][nm]==false && arr[nh][nn][nm]==0){
-                    q.push({nh, nn, nm});
-                    arr[nh][nn][nm]=1;
-                    dp[nh][nn][nm]=dp[ch][cn][cm]+1;
-                    visit[nh][nn][nm]=true;
+        if(cur==g){
+            cout << dp[g];
+            exit(0);
+        }
+
+        for(int i=0; i<2; i++){
+            if(i==0){
+                int next=cur+u;
+                if(next<=f){
+                    if(visit[next]==false || dp[next]>dp[cur]+1){
+                        visit[next]=true;
+                        dp[next]=dp[cur]+1;
+                        q.push(next);
+                    }
+                }
+            }
+            if(i==1){
+                int next=cur-d;
+                if(next>=1){
+                    if(visit[next]==false || dp[next]>dp[cur]+1){
+                        visit[next]=true;
+                        dp[next]=dp[cur]+1;
+                        q.push(next);
+                    }
                 }
             }
         }
     }
-}
-
-void check_zero(){
-    int cnt=0;
-    for(int i=0; i<h; i++){
-        for(int j=0; j<n; j++){
-            for(int k=0; k<m; k++){
-                if(arr[i][j][k]==1)
-                    cnt++;
-            }
-        }
-    }
-    if(cnt==n*m*h){
-        cout << "0";
-        exit(0);
-    }
-}
-
-void check_minus(){
-    int cnt_zero=0;
-    for(int i=0; i<h; i++){
-        for(int j=0; j<n; j++){
-            for(int k=0; k<m; k++){
-                if(arr[i][j][k]==0)
-                    cnt_zero++;
-            }
-        }
-    }
-    if(cnt_zero>0){
-        cout << "-1";
-        exit(0);
-    }
-}
-
-int ans(){
-    int MAX=0;
-    for(int i=0; i<h; i++){
-        for(int j=0; j<n; j++){
-            for(int k=0; k<m; k++){
-                MAX=max(MAX, dp[i][j][k]);
-            }
-        }
-    }
-    return MAX;
 }
 
 int main(){
@@ -96,15 +51,7 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> m >> n >> h;
-    for(int i=0; i<h; i++)
-        for(int j=0; j<n; j++)
-            for(int k=0; k<m; k++)
-                cin >> arr[i][j][k];
-    check_zero();
-
+    cin >> f >> s >> g >> u >> d;
     solve();
-    check_minus();
-
-    cout << ans();
+    cout << "use the stairs";
 }
