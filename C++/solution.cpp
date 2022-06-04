@@ -4,84 +4,45 @@
 
 using namespace std;
 
-int n, m; //행 열
-int arr[300][300];
-int temp_arr[300][300];
-bool visit[300][300];
-int dx[]={1, -1, 0, 0};
-int dy[]={0, 0, 1, -1};
-
-void ice_cnt(int x, int y){
-    queue<pair<int, int>> q;
-    q.push({x, y});
-    visit[x][y]=true;
-
-    while(!q.empty()){
-        int cx=q.front().first;
-        int cy=q.front().second;
-        q.pop();
-
-        for(int i=0; i<4; i++){
-            int nx=cx+dx[i];
-            int ny=cy+dy[i];
-            
-            if(nx>=0 && ny>=0 && nx<n && ny<m){
-                if(visit[nx][ny]==false && arr[nx][ny]!=0){
-                    visit[nx][ny]=true;
-                    q.push({nx, ny});
-                }
-            }
-        }
-    }
-}
-
-void ice_melt(){ //동시에 녹는 것을 표현하기 위해 temp_arr사용
-    for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            if(arr[i][j]!=0){
-                int temp=arr[i][j];
-                for(int k=0; k<4; k++){
-                    int cx=i+dx[k];
-                    int cy=j+dy[k];
-                    if(cx>=0 && cy>=0 && cx<n && cy<m)
-                        if(arr[cx][cy]==0)
-                            temp--;
-                }
-                if(temp<0) temp=0;
-                temp_arr[i][j]=temp;
-            }
-            else temp_arr[i][j]=0;
-        }
-    }
-    for(int i=0; i<n; i++)
-        for(int j=0; j<m; j++)
-            arr[i][j]=temp_arr[i][j];
-}
+int t, n;
+pair<int, int> home, store[100], rock; //열 행
+bool visit[100]; //편의점 방문여부
 
 void solve(){
-    int year=0;
-    while(1){
-        int ice=0; //year년 후 빙산 개수
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
-                if(visit[i][j]==false && arr[i][j]!=0){
-                    ice_cnt(i, j);
-                    ice++;
+    if(abs(home.first-rock.first)+abs(home.second-rock.second)<=1000){
+        cout << "happy\n";
+        return ;
+    }
+
+    queue<pair<int, int>> q;
+    q.push(home);
+
+    while(!q.empty()){
+        pair<int, int> cur=q.front();
+        q.pop();
+
+        if(cur==home){
+            for(int i=0; i<n; i++){
+                if(visit[i]==false && (abs(cur.first-store[i].first)+abs(cur.second-store[i].second)<=1000)){
+                    q.push(store[i]);
+                    visit[i]=true;
                 }
             }
         }
-        if(ice==0){//다 녹았을 경우
-            cout << "0";
-            break;
+        else{
+            if(abs(cur.first-rock.first)+abs(cur.second-rock.second)<=1000){
+                cout << "happy\n";
+                return ;
+            }
+            for(int i=0; i<n; i++){
+                if(visit[i]==false && (abs(cur.first-store[i].first)+abs(cur.second-store[i].second)<=1000)){
+                    q.push(store[i]);
+                    visit[i]=true;
+                }
+            }
         }
-        if(ice>=2){
-            cout << year;
-            break;
-        }
-        memset(visit, false, sizeof(visit));
-        ice_melt();
-        year++;
     }
+    cout << "sad\n";
 }
 
 int main(){
@@ -89,9 +50,14 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n >> m;
-    for(int i=0; i<n; i++)
-        for(int j=0; j<m; j++)
-            cin >> arr[i][j];
-    solve();
+    cin >> t;
+    for(int i=0; i<t; i++){
+        cin >> n;
+        cin >> home.first >> home.second;
+        for(int j=0; j<n; j++)
+            cin >> store[j].first >> store[j].second;
+        cin >> rock.first >> rock.second;
+        solve();
+        memset(visit, false, sizeof(visit));
+    }
 }
