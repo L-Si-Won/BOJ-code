@@ -2,26 +2,25 @@
 
 using namespace std;
 
-int n;
-int arr[101][101];
-long long dp[101][101];
+int arr[500][500];
+int m, n, h; //행 열
+bool visit[500][500];
+int dx[]={0, 0, 1, -1};
+int dy[]={1, -1, 0, 0};
+int dp[500][500];
 
-void solve(){
-    dp[1][1]=1;
-    for(int i=1; i<=n; i++){
-        for(int j=1; j<=n; j++){
-            if(arr[i][j]!=0 && i<=n && j<=n){
-                int val=arr[i][j];
-                int down=i+val;
-                int right=j+val;
-                if(down<=n)
-                    dp[down][j]+=dp[i][j];
-                if(right<=n)
-                    dp[i][right]+=dp[i][j];
-            }
-        }
+int solve(int x, int y){
+    if(x==m-1 && y==n-1) return 1;
+    if(visit[x][y]==true) return dp[x][y];
+    visit[x][y]=true;
+    for(int i=0; i<4; i++){
+        int nx=x+dx[i];
+        int ny=y+dy[i];
+        if(nx>=0 && ny>=0 && nx<m && ny<n)
+            if(arr[nx][ny]<arr[x][y])
+                dp[x][y]+=solve(nx, ny);
     }
-    cout << dp[n][n];
+    return dp[x][y];
 }
 
 int main(){
@@ -29,9 +28,9 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n;
-    for(int i=1; i<=n; i++)
-        for(int j=1; j<=n; j++)
+    cin >> m >> n;
+    for(int i=0; i<m; i++)
+        for(int j=0; j<n; j++)
             cin >> arr[i][j];
-    solve();
+    cout << solve(0, 0);
 }
