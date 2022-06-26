@@ -1,9 +1,12 @@
 #include <iostream>
-#include <string>
+#include <cstring>
 
 using namespace std;
 
 int n;
+char arr[100][100];
+int garo, sero;
+bool visit[100][100];
 
 int main(){
     cin.tie(NULL);
@@ -11,30 +14,47 @@ int main(){
     ios_base::sync_with_stdio(false);
 
     cin >> n;
-    while(1){
+    for(int i=0; i<n; i++){
         string s;
-        s=to_string(n);
-        bool palin=true;
-        for(int i=0; i<s.size()/2; i++){
-            char head=s.at(i);
-            char tail=s.at(s.size()-1-i);
-            if(head!=tail) palin=false;
-        }
-        if(palin==false){
-            n++;
-            continue;
-        }
-        bool prime=true;
-        for(int i=2; i*i<=n; i++)
-            if(n%i==0) prime=false;
-        if(prime==false) n++;
-        else{
-            if(n==1){
-                n++;
-                continue;
+        cin >> s;
+        for(int j=0; j<n; j++)
+            arr[i][j]=s[j];
+    }
+
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            if(visit[i][j]==false){
+                if(arr[i][j]=='.'){
+                    visit[i][j]=true;
+                    j++;
+                    int check=0;
+                    while(j<n && arr[i][j]=='.'){
+                        visit[i][j]=true;
+                        j++;
+                        check++;
+                    }
+                    if(check!=0) garo++;
+                }
             }
-            cout << n;
-            return 0;
         }
     }
+    memset(visit, false, sizeof(visit));
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            if(visit[j][i]==false){
+                if(arr[j][i]=='.'){
+                    visit[j][i]=true;
+                    j++;
+                    int check=0;
+                    while(j<n && arr[j][i]=='.'){
+                        visit[j][i]=true;
+                        j++;
+                        check++;
+                    }
+                    if(check!=0) sero++;
+                }
+            }
+        }
+    }
+    cout << garo << " " << sero;
 }
