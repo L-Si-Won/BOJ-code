@@ -2,32 +2,23 @@
 
 using namespace std;
 
-long long n, k;
-long long d=1000000007;
-long long f[4000001];
-long long inv[4000001];
+int a[5][5];
+int ans[5][5];
+int temp[5][5];
+long long n, b;
 
-long long power(long long x, long long y){
-    long long ret=1;
-    while(y>0){
-        if(y%2!=0){
-            ret*=x;
-            ret%=d;
+void multi(int a1[5][5], int a2[5][5]){
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            temp[i][j]=0;
+            for(int k=0; k<n; k++)
+                temp[i][j]+=(a1[i][k]*a2[k][j]);
+            temp[i][j]%=1000;
         }
-        x*=x;
-        x%=d;
-        y/=2;
     }
-    return ret;
-}
-
-void fac(){
-    f[1]=1;
-    for(int i=2; i<=4000000; i++)
-        f[i]=(f[i-1]*i)%d;
-    inv[n]=power(f[n], d-2);
-    for(int i=n-1; i>0; i--)
-        inv[i]=(inv[i+1]*(i+1))%d;
+    for(int i=0; i<n; i++)
+        for(int j=0; j<n; j++)
+            a1[i][j]=temp[i][j];
 }
 
 int main(){
@@ -35,13 +26,24 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n >> k;
-    fac();
-    if(n==k || k==0){
-        cout << 1;
-        return 0;
+    cin >> n >> b;
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            cin >> a[i][j];
+        }
+        ans[i][i]=1;
     }
-    long long result=(f[n]*inv[n-k])%d;
-    result=(result*inv[k])%d;
-    cout << result;
+
+    while(b>0){
+        if(b%2==1)
+            multi(ans, a);
+        multi(a, a);
+        b/=2;
+    }
+    
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++)
+            cout << ans[i][j] << " ";
+        cout << "\n";
+    }
 }
