@@ -2,23 +2,19 @@
 
 using namespace std;
 
-int a[5][5];
-int ans[5][5];
-int temp[5][5];
-long long n, b;
+int n, m, p;
 
-void multi(int a1[5][5], int a2[5][5]){
-    for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++){
-            temp[i][j]=0;
-            for(int k=0; k<n; k++)
-                temp[i][j]+=(a1[i][k]*a2[k][j]);
-            temp[i][j]%=1000;
-        }
+void solve(){
+    int a=1, b=1;
+    int cnt=0;
+    while(1){
+        int temp=(a+b)%m; //%m을 하지 않으면 너무 커져서 시간초과
+        a=b;
+        b=temp;
+        cnt++;
+        if(a%m==1 && b%m==1) break;
     }
-    for(int i=0; i<n; i++)
-        for(int j=0; j<n; j++)
-            a1[i][j]=temp[i][j];
+    cout << n << " " << cnt << "\n";
 }
 
 int main(){
@@ -26,24 +22,9 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n >> b;
-    for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++){
-            cin >> a[i][j];
-        }
-        ans[i][i]=1;
-    }
-
-    while(b>0){
-        if(b%2==1)
-            multi(ans, a);
-        multi(a, a);
-        b/=2;
-    }
-    
-    for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++)
-            cout << ans[i][j] << " ";
-        cout << "\n";
+    cin >> p;
+    for(int i=1; i<p+1; i++){
+        cin >> n >> m;
+        solve();
     }
 }
