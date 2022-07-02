@@ -2,19 +2,15 @@
 
 using namespace std;
 
-int n, m, p;
+long long n;
+int a[1500050];
 
 void solve(){
-    int a=1, b=1;
-    int cnt=0;
-    while(1){
-        int temp=(a+b)%m; //%m을 하지 않으면 너무 커져서 시간초과
-        a=b;
-        b=temp;
-        cnt++;
-        if(a%m==1 && b%m==1) break;
-    }
-    cout << n << " " << cnt << "\n";
+    a[0]=0;
+    a[1]=1;
+    for(int i=2; i<=1499999; i++)
+        a[i]=(a[i-1]+a[i-2])%1000000;
+    cout << a[n%1500000];
 }
 
 int main(){
@@ -22,9 +18,6 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> p;
-    for(int i=1; i<p+1; i++){
-        cin >> n >> m;
-        solve();
-    }
+    cin >> n;
+    solve();
 }
