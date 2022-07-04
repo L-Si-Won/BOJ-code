@@ -1,97 +1,45 @@
 #include <iostream>
 #include <vector>
-#include <cstring>
-#include <queue>
 
 using namespace std;
 
-int n, h, w;
-char arr[102][102];
-int min_door[3][102][102];
-pair<int, int> crime[3];
-bool visit[3][102][102];
-int dx[]={1, 0, -1, 0};
-int dy[]={0, 1, 0, -1};
+#define ll long long
 
-void calculate_door(int idx){
-    priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> q;
-    int x=crime[idx].first;
-    int y=crime[idx].second;
-    q.push({0, {x, y}});
-    visit[idx][x][y]=true;
-    min_door[idx][x][y]=0;
+ll n;
+vector<ll> h;
+ll seg[1000001];
+ll ans;
 
-    while(!q.empty()){
-        int cnt=q.top().first;
-        int cx=q.top().second.first;
-        int cy=q.top().second.second;
-        q.pop();
+int init(int node, int s, int e){
+    if(s==e) return seg[node]=s;
+    int mid=(s+e)/2;
+    int left=init(node*2, s, mid);
+    int right=init(node*2+1, mid+1, e);
 
-        for(int i=0; i<4; i++){
-            int nx=cx+dx[i];
-            int ny=cy+dy[i];
-
-            if(nx>=0 && ny>=0 && nx<=h+1 && ny<=w+1){
-                if(arr[nx][ny]=='*') continue;
-
-                int ncnt=cnt;
-                if(arr[nx][ny]=='#') ncnt++;
-
-                if(min_door[idx][nx][ny] > ncnt){
-                    min_door[idx][nx][ny]=ncnt;
-                    visit[idx][nx][ny]=true;
-                    q.push({ncnt, {nx, ny}});
-                }
-            }
-        }
-    }
+    return seg[node]=h[left]<h[right] ? left : right;
 }
 
-void init()
-{
-	cin >> h >> w;
+int query(int node, int s, int e, int l, int r){
+    if(e<l || s>r) return 2e9;
+    if(l<=s && r>=e) return seg[node];
+    int mid=(s+e)/2;
+    int left=query(2*node, s, mid, l, r);
+    int right=query(2*node+1, mid+1, e, l, r);
 
-	for (int i = 0; i <= h + 1; i++) { //다차원배열 초기화할 때 주의(memset)
-		for (int j = 0; j <= w + 1; j++) {
-			arr[i][j] = '.';
-			min_door[0][i][j] = 987654321;
-			min_door[1][i][j] = 987654321;
-			min_door[2][i][j] = 987654321;
-			visit[0][i][j] = false;
-			visit[1][i][j] = false;
-			visit[2][i][j] = false;
-		}
-	}
-
-	crime[0] = { -1,-1 };
-	crime[1] = { -1,-1 };
-	crime[2] = { 0,0 };
+    if(left==2e9) return right;
+    if(right==2e9) return left;
+    else return h[left]<h[right] ? left : right;
 }
 
-void make()
-{
-	// 감옥 바깥 '.'으로 채우기
-	for (int i = 0; i <= h + 1; i++) {
-		arr[i][0] = '.';
-		arr[i][w + 1] = '.';
-	}
-	for (int i = 0; i <= w + 1; i++) {
-		arr[0][i] = '.';
-		arr[h + 1][i] = '.';
-	}
-	
-	// 감옥 만들기
-	for (int i = 1; i <= h; i++) {
-		for (int j = 1; j <= w; j++) {
-			cin >> arr[i][j];
-			if (arr[i][j] == '$') {
-				if (crime[0].first == -1)
-					crime[0] = { i,j };
-				else
-					crime[1] = { i,j };
-			}
-		}
-	}
+void solve(ll left, ll right){
+    if(left > right) return;
+
+    ll idx=query(1, 0, n-1, left, right);
+
+    ans=max(ans, h[idx]*(right-left+1));
+
+    solve(left, idx-1);
+    solve(idx+1, right);
 }
 
 int main(){
@@ -99,29 +47,18 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n;
-    for(int i=0; i<n; i++){
-        init();
-        make();
-        
-        for(int j=0; j<3; j++)
-            calculate_door(j);
-
-        int result=987654321;
-        for(int j=0; j<=h+1; j++){
-            for(int k=0; k<=w+1; k++){
-                if(arr[j][k]=='*') continue;
-                if(visit[0][j][k]==false || visit[1][j][k]==false || visit[2][j][k]==false)
-                    continue;
-                int sum=0;
-                for(int l=0; l<3; l++)
-                    sum+=min_door[l][j][k];
-                if(arr[j][k]=='#') sum-=2;
-
-                result=min(result, sum);
-            }
+    while(1){
+        cin >> n;
+        if(n==0) break;
+        for(int i=0; i<n; i++){
+            int a;
+            cin >> a;
+            h.push_back(a);
         }
-
-        cout << result << "\n";
+        init(1, 0, n-1);
+        solve(0, n-1);
+        cout << ans << "\n";
+        h.clear();
+        ans=0;
     }
 }
