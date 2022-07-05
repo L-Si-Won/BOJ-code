@@ -1,45 +1,45 @@
 #include <iostream>
-#include <vector>
+#include <queue>
 
 using namespace std;
 
-#define ll long long
+int h, w; //행, 열
+char arr[100][100];
+pair<int, int> c1={-1, -1};
+pair<int, int> c2={-1, -1};
+int dx[]={1, 0, -1, 0};
+int dy[]={0, 1, 0, -1};
+int cnt[100][100];
 
-ll n;
-vector<ll> h;
-ll seg[1000001];
-ll ans;
+void solve(){ //웬만하면 해당 좌표의 정보는 큐에 저장하도록 하자!
+    queue<pair<pair<int, int>, pair<int, int>>> q; //좌표, 거울 수, 진행방향
+    q.push({c1, {0, -1}});
+    cnt[c1.first][c1.second]=0;
 
-int init(int node, int s, int e){
-    if(s==e) return seg[node]=s;
-    int mid=(s+e)/2;
-    int left=init(node*2, s, mid);
-    int right=init(node*2+1, mid+1, e);
+    while(!q.empty()){
+        int x=q.front().first.first;
+        int y=q.front().first.second;
+        int mir=q.front().second.first;
+        int dir=q.front().second.second;
+        q.pop();
+        
+        for(int i=0; i<4; i++){ //순서 : 하(0), 우(1), 상(2), 좌(3)
+            int nx=x+dx[i];
+            int ny=y+dy[i];
 
-    return seg[node]=h[left]<h[right] ? left : right;
-}
-
-int query(int node, int s, int e, int l, int r){
-    if(e<l || s>r) return 2e9;
-    if(l<=s && r>=e) return seg[node];
-    int mid=(s+e)/2;
-    int left=query(2*node, s, mid, l, r);
-    int right=query(2*node+1, mid+1, e, l, r);
-
-    if(left==2e9) return right;
-    if(right==2e9) return left;
-    else return h[left]<h[right] ? left : right;
-}
-
-void solve(ll left, ll right){
-    if(left > right) return;
-
-    ll idx=query(1, 0, n-1, left, right);
-
-    ans=max(ans, h[idx]*(right-left+1));
-
-    solve(left, idx-1);
-    solve(idx+1, right);
+            if(nx>=0 && ny>=0 && nx<h && ny<w){
+                if(arr[nx][ny]!='*'){
+                    int temp=mir;
+                    if(dir!=i) temp++;
+                    if(cnt[nx][ny]>=temp){
+                        cnt[nx][ny]=temp;
+                        q.push({{nx, ny}, {temp, i}});
+                    }
+                }
+            }
+        }
+    }
+    cout << cnt[c2.first][c2.second]-1 <<"\n"; //처음에 무조건 +1되므로 -1해주기
 }
 
 int main(){
@@ -47,18 +47,20 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    while(1){
-        cin >> n;
-        if(n==0) break;
-        for(int i=0; i<n; i++){
-            int a;
-            cin >> a;
-            h.push_back(a);
+    cin >> w >> h;
+    for(int i=0; i<h; i++){
+        string s;
+        cin >> s;
+        for(int j=0; j<w; j++){
+            arr[i][j]=s[j];
+            if(arr[i][j]=='C'){
+                if(c1.first==-1)
+                    c1={i, j};
+                else
+                    c2={i, j};
+            }
+            cnt[i][j]=2e9;
         }
-        init(1, 0, n-1);
-        solve(0, n-1);
-        cout << ans << "\n";
-        h.clear();
-        ans=0;
     }
+    solve();
 }
