@@ -1,8 +1,10 @@
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
 int n;
+vector<string> ch;
 
 int main(){
     cin.tie(NULL);
@@ -10,15 +12,21 @@ int main(){
     ios_base::sync_with_stdio(false);
 
     cin >> n;
-    int origin=n;
-    int cnt=0;
-    while(1){
-        int sum=n/10+n%10;
-        n=n%10*10+sum%10;
-        cnt++;
-        if(n==origin){
-            cout << cnt;
-            break;
-        }
+    for(int i=0; i<n; i++){
+        string s;
+        cin >> s;
+        ch.push_back(s);
     }
+
+    int k1, k2;
+    for(int i=0; i<n; i++)
+        if(ch[i]=="KBS1") k1=i;
+    for(int i=0; i<k1; i++) cout << 1;
+    for(int i=0; i<k1; i++) cout << 4;
+
+    for(int i=0; i<n; i++)
+        if(ch[i]=="KBS2") k2=i;
+    if(k1>k2) k2++;
+    for(int i=0; i<k2; i++) cout << 1;
+    for(int i=0; i<k2-1; i++) cout << 4;    
 }
