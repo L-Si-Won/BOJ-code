@@ -3,30 +3,32 @@
 
 using namespace std;
 
-int n;
-vector<string> ch;
+int n, k;
+int gold[1001];
+int silver[1001];
+int bronze[1001];
+int answer;
 
 int main(){
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n;
-    for(int i=0; i<n; i++){
-        string s;
-        cin >> s;
-        ch.push_back(s);
+    cin >> n >> k;
+    for(int i=1; i<=n; i++){
+       int a, b, c, d;
+       cin >> a >> b >> c >> d;
+       gold[a]=b; silver[a]=c; bronze[a]=d;
     }
-
-    int k1, k2;
-    for(int i=0; i<n; i++)
-        if(ch[i]=="KBS1") k1=i;
-    for(int i=0; i<k1; i++) cout << 1;
-    for(int i=0; i<k1; i++) cout << 4;
-
-    for(int i=0; i<n; i++)
-        if(ch[i]=="KBS2") k2=i;
-    if(k1>k2) k2++;
-    for(int i=0; i<k2; i++) cout << 1;
-    for(int i=0; i<k2-1; i++) cout << 4;    
+    for(int i=1; i<=n; i++){
+        if(i==k) continue;
+        if(gold[k]<gold[i]) answer++;
+        else if(gold[k]==gold[i]){
+            if(silver[k]<silver[i]) answer++;
+            else if(silver[k]==silver[i]){
+                if(bronze[k]<bronze[i]) answer++;
+            }
+        }
+    }
+    cout << answer+1;
 }
