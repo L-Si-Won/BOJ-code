@@ -1,22 +1,19 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>
+#include <cstring>
 #include <queue>
 
 using namespace std;
 
-int m, n, k, arr[100][100];
+int n, answer;
+char arr[100][100];
 bool visit[100][100];
 int dx[]={1, 0, -1, 0};
 int dy[]={0, 1, 0, -1};
-vector<int> v;
-int answer;
 
-int bfs(int x, int y){
+void bfs(int x, int y, char color){
     queue<pair<int, int>> q;
     q.push({x, y});
     visit[x][y]=true;
-    int area=1;
 
     while(!q.empty()){
         int cx=q.front().first;
@@ -27,17 +24,14 @@ int bfs(int x, int y){
             int nx=cx+dx[i];
             int ny=cy+dy[i];
 
-            if(nx>=0 && ny>=0 && nx<m && ny<n){
-                if(arr[nx][ny]==0 && visit[nx][ny]==false){
-                    visit[nx][ny]=true;
+            if(nx>=0 && ny>=0 && nx<n && ny<n){
+                if(arr[nx][ny]==color && visit[nx][ny]==false){
                     q.push({nx, ny});
-                    area++;
+                    visit[nx][ny]=true;
                 }
             }
         }
     }
-
-    return area;
 }
 
 int main(){
@@ -45,33 +39,36 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> m >> n >> k;
-    while(k--){
-        int ldx, ldy, rux, ruy;
-        cin >> ldx >> ldy >> rux >> ruy;
-        int lux=ldx, luy=ruy, rdx=rux, rdy=ldy; //좌상단, 우하단 좌표
-
-        //좌표를 인덱스로 표현
-        int left_idx_m=m-luy;
-        int left_idx_n=lux;
-        int right_idx_m=m-rdy-1;
-        int right_idx_n=rdx-1;
-
-        //인덱스를 기반으로 사각형 표현
-        for(int i=left_idx_m; i<=right_idx_m; i++)
-            for(int j=left_idx_n; j<=right_idx_n; j++)
-                arr[i][j]=1;
+    cin >> n;
+    for(int i=0; i<n; i++){
+        string s;
+        cin >> s;
+        for(int j=0; j<n; j++)
+            arr[i][j]=s[j];
     }
-    for(int i=0; i<m; i++){
+    for(int i=0; i<n; i++){
         for(int j=0; j<n; j++){
-            if(arr[i][j]==0 && visit[i][j]==false){
-                v.push_back(bfs(i, j));
+            if(visit[i][j]==false){
+                bfs(i, j, arr[i][j]);
                 answer++;
             }
         }
     }
-    sort(v.begin(), v.end());
-    cout << answer << "\n";
-    for(int i=0; i<v.size(); i++)
-        cout << v[i] << " ";
+    cout << answer << " ";
+
+    answer=0;
+    memset(visit, false, sizeof(visit));
+    for(int i=0; i<n; i++)
+        for(int j=0; j<n; j++)
+            if(arr[i][j]=='R') arr[i][j]='G';
+
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            if(visit[i][j]==false){
+                bfs(i, j, arr[i][j]);
+                answer++;
+            }
+        }
+    }
+    cout << answer;
 }
