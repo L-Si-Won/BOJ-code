@@ -1,37 +1,44 @@
 #include <iostream>
 #include <cstring>
 #include <queue>
+#include <tuple>
 
 using namespace std;
 
-int n, answer;
-char arr[100][100];
-bool visit[100][100];
+int n, m, answer;
+char arr[50][50];
+bool visit[50][50];
 int dx[]={1, 0, -1, 0};
 int dy[]={0, 1, 0, -1};
 
-void bfs(int x, int y, char color){
-    queue<pair<int, int>> q;
-    q.push({x, y});
+int bfs(int x, int y){
+    queue<tuple<int, int, int>> q;
+    q.push({x, y, 0});
     visit[x][y]=true;
-
+    int MAX=0;
+    
     while(!q.empty()){
-        int cx=q.front().first;
-        int cy=q.front().second;
+        int cx=get<0>(q.front());
+        int cy=get<1>(q.front());
+        int cd=get<2>(q.front());
         q.pop();
 
         for(int i=0; i<4; i++){
             int nx=cx+dx[i];
             int ny=cy+dy[i];
+            int nd=cd+1;
 
-            if(nx>=0 && ny>=0 && nx<n && ny<n){
-                if(arr[nx][ny]==color && visit[nx][ny]==false){
-                    q.push({nx, ny});
+            if(nx>=0 && ny>=0 && nx<n && ny<m){
+                if(visit[nx][ny]==false && arr[nx][ny]=='L'){
+                    q.push({nx, ny, nd});
                     visit[nx][ny]=true;
+                    MAX=max(MAX, nd);
                 }
             }
         }
     }
+
+    return MAX;
 }
 
 int main(){
@@ -39,36 +46,22 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n;
+    cin >> n >> m;
     for(int i=0; i<n; i++){
         string s;
         cin >> s;
-        for(int j=0; j<n; j++)
+        for(int j=0; j<m; j++)
             arr[i][j]=s[j];
     }
+    
     for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++){
-            if(visit[i][j]==false){
-                bfs(i, j, arr[i][j]);
-                answer++;
+        for(int j=0; j<m; j++){
+            if(arr[i][j]=='L'){
+                answer=max(answer, bfs(i, j));
+                memset(visit, false, sizeof(visit));
             }
         }
     }
-    cout << answer << " ";
-
-    answer=0;
-    memset(visit, false, sizeof(visit));
-    for(int i=0; i<n; i++)
-        for(int j=0; j<n; j++)
-            if(arr[i][j]=='R') arr[i][j]='G';
-
-    for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++){
-            if(visit[i][j]==false){
-                bfs(i, j, arr[i][j]);
-                answer++;
-            }
-        }
-    }
+    
     cout << answer;
 }
