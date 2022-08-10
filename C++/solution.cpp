@@ -1,44 +1,28 @@
 #include <iostream>
-#include <cstring>
-#include <queue>
-#include <tuple>
 
 using namespace std;
 
-int n, m, answer;
-char arr[50][50];
-bool visit[50][50];
+int r, c, MAX;
+char arr[20][20];
+bool visit[20][20];
 int dx[]={1, 0, -1, 0};
 int dy[]={0, 1, 0, -1};
 
-int bfs(int x, int y){
-    queue<tuple<int, int, int>> q;
-    q.push({x, y, 0});
-    visit[x][y]=true;
-    int MAX=0;
-    
-    while(!q.empty()){
-        int cx=get<0>(q.front());
-        int cy=get<1>(q.front());
-        int cd=get<2>(q.front());
-        q.pop();
-
-        for(int i=0; i<4; i++){
-            int nx=cx+dx[i];
-            int ny=cy+dy[i];
-            int nd=cd+1;
-
-            if(nx>=0 && ny>=0 && nx<n && ny<m){
-                if(visit[nx][ny]==false && arr[nx][ny]=='L'){
-                    q.push({nx, ny, nd});
-                    visit[nx][ny]=true;
-                    MAX=max(MAX, nd);
-                }
+void dfs(int x, int y, int cnt, bool alpha[20]){
+    for(int i=0; i<4; i++){
+        int nx=x+dx[i];
+        int ny=y+dy[i];
+        if(nx>=0 && ny>=0 && nx<r && ny<c){
+            if(visit[nx][ny]==false && alpha[arr[nx][ny]-'A']==false){
+                visit[nx][ny]=true;
+                alpha[arr[nx][ny]-'A']=true;
+                dfs(nx, ny, cnt+1, alpha);
+                visit[nx][ny]=false;
+                alpha[arr[nx][ny]-'A']=false;
             }
         }
     }
-
-    return MAX;
+    MAX=max(MAX, cnt);
 }
 
 int main(){
@@ -46,22 +30,16 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n >> m;
-    for(int i=0; i<n; i++){
+    cin >> r >> c;
+    for(int i=0; i<r; i++){
         string s;
         cin >> s;
-        for(int j=0; j<m; j++)
+        for(int j=0; j<c; j++)
             arr[i][j]=s[j];
     }
-    
-    for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            if(arr[i][j]=='L'){
-                answer=max(answer, bfs(i, j));
-                memset(visit, false, sizeof(visit));
-            }
-        }
-    }
-    
-    cout << answer;
+    bool alpha[26]={0};
+    visit[0][0]=true;
+    alpha[arr[0][0]-'A']=true;
+    dfs(0, 0, 1, alpha);
+    cout << MAX;
 }
