@@ -1,53 +1,46 @@
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
-int n, k, answer;
-int order[101], mul[101];
+int n, t;
+pair<int, int> grd[100000]; //서류, 면접
+
+bool comp(pair<int, int> a, pair<int, int> b){
+    return a.first < b.first ? true : false;
+}
+
+void solve(){
+    sort(grd, grd+n, comp);
+    pair<int, int> temp=grd[0];
+    int answer=1;
+
+    for(int i=1; i<n; i++){
+        if(temp.second > grd[i].second){
+            answer++;
+            temp=grd[i];
+        }
+    }
+    cout << answer << "\n";
+}
 
 int main(){
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n >> k;
-    for(int i=1; i<=k; i++)
-        cin >> order[i];
-
-    for(int i=1; i<=k; i++){
-        //꽂혀있는 것을 사용
-        bool flag=false;
-        for(int j=1; j<=n; j++)
-            if(mul[j]==order[i]) flag=true;
-        if(flag==true) continue;
-
-        //빈칸에 꽂기
-        for(int j=1; j<=n; j++){
-            if(mul[j]==0){
-                mul[j]=order[i];
-                flag=true;
-                break;
-            }
+    cin >> t;
+    while(t--){
+        for(int i=0; i<100000; i++){
+            grd[i]={0, 0};
         }
-        if(flag==true) continue;
 
-        //뽑고 꽂기
-        //꽂혀있는 것 중 가장 나중에 사용되는 것 뽑기
-        int last=-1;
-        int idx=-1;
-        for(int j=1; j<=n; j++){
-            int temp=0;
-            for(int l=i+1; l<=k; l++){
-                if(order[l]==mul[j]) break;
-                temp++;
-            }
-            if(temp>last){
-                last=temp;
-                idx=j;
-            }
+        cin >> n;
+        for(int i=0; i<n; i++){
+            int a, b;
+            cin >> a >> b;
+            grd[i]={a, b};
         }
-        mul[idx]=order[i];
-        answer++;
+        solve();
     }
-    cout << answer;
 }
