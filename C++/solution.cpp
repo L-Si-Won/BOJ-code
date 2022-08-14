@@ -3,25 +3,11 @@
 
 using namespace std;
 
-int n, t;
-pair<int, int> grd[100000]; //서류, 면접
+int n, p, score;
+int arr[50];
 
-bool comp(pair<int, int> a, pair<int, int> b){
-    return a.first < b.first ? true : false;
-}
-
-void solve(){
-    sort(grd, grd+n, comp);
-    pair<int, int> temp=grd[0];
-    int answer=1;
-
-    for(int i=1; i<n; i++){
-        if(temp.second > grd[i].second){
-            answer++;
-            temp=grd[i];
-        }
-    }
-    cout << answer << "\n";
+bool comp(int a, int b){
+    return a > b ? true : false;
 }
 
 int main(){
@@ -29,18 +15,20 @@ int main(){
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> t;
-    while(t--){
-        for(int i=0; i<100000; i++){
-            grd[i]={0, 0};
-        }
+    cin >> n >> score >> p;
+    for(int i=0; i<n; i++)
+        cin >> arr[i];
+    
+    //n==0이면 sort의 2번째 인자가 arr-1이므로 에러
+    if(n>0) sort(arr, arr+n-1, comp);
 
-        cin >> n;
-        for(int i=0; i<n; i++){
-            int a, b;
-            cin >> a >> b;
-            grd[i]={a, b};
-        }
-        solve();
+    int answer=1;
+    int same=0;
+    for(int i=0; i<n; i++){
+        if(arr[i]>score) answer++;
+        else if(arr[i]==score) same++;
+        else break;
     }
+    if(answer+same>p) cout << -1;
+    else cout << answer;
 }
