@@ -1,34 +1,50 @@
 #include <iostream>
+#include <vector>
 #include <algorithm>
 
 using namespace std;
 
-int n, p, score;
-int arr[50];
+vector<int> v;
+int x;
 
-bool comp(int a, int b){
-    return a > b ? true : false;
-}
-
-int main(){
+int main() {
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> n >> score >> p;
-    for(int i=0; i<n; i++)
-        cin >> arr[i];
-    
-    //n==0이면 sort의 2번째 인자가 arr-1이므로 에러
-    if(n>0) sort(arr, arr+n-1, comp);
+    while (cin >> x){
+        x*=10000000; //나노변환
+        int n;
+        cin >> n;
+        
+        v.clear();
+        for(int i=0;i<n;i++){
+            int temp;
+            cin>> temp;
+            v.push_back(temp);   
+        }
+        sort(v.begin(),v.end());
 
-    int answer=1;
-    int same=0;
-    for(int i=0; i<n; i++){
-        if(arr[i]>score) answer++;
-        else if(arr[i]==score) same++;
-        else break;
+        
+        if(n<2){ //모든 입력을 받은 뒤 예외처리해야함
+            cout << "danger\n";
+            continue;
+        }
+        
+        int l=0,r=n-1,sum;
+        bool flag=false;
+        while(l<r){ //이분탐색
+            sum = v[l]+v[r];
+            if(sum==x){
+                flag = true;
+                cout << "yes " << v[l] << " " << v[r] << '\n';
+                break;
+            }
+            else if(sum < x)  l++;
+            else r--;
+        }
+        if(flag==false) cout << "danger\n";
     }
-    if(answer+same>p) cout << -1;
-    else cout << answer;
+
+    return 0;
 }
