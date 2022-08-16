@@ -16,12 +16,7 @@ int main() {
         x*=10000000; //나노변환
         int n;
         cin >> n;
-        /*
-        if(n<2){
-            cout << "danger\n";
-            continue;
-        }
-        */
+        
         v.clear();
         for(int i=0;i<n;i++){
             int temp;
@@ -30,6 +25,12 @@ int main() {
         }
         sort(v.begin(),v.end());
 
+        
+        if(n<2){ //모든 입력을 받은 뒤 예외처리해야함
+            cout << "danger\n";
+            continue;
+        }
+        
         int l=0,r=n-1,sum;
         bool flag=false;
         while(l<r){ //이분탐색
@@ -44,5 +45,6 @@ int main() {
         }
         if(flag==false) cout << "danger\n";
     }
+
     return 0;
 }
