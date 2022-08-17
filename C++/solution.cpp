@@ -1,50 +1,41 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <string>
 
 using namespace std;
 
-vector<int> v;
-int x;
+int t, n;
+vector<string> v; //10자리 or 0으로 시작
 
 int main() {
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    while (cin >> x){
-        x*=10000000; //나노변환
-        int n;
+    cin >> t;
+    while(t--){
         cin >> n;
-        
         v.clear();
-        for(int i=0;i<n;i++){
-            int temp;
-            cin>> temp;
-            v.push_back(temp);   
-        }
-        sort(v.begin(),v.end());
-
-        
-        if(n<2){ //모든 입력을 받은 뒤 예외처리해야함
-            cout << "danger\n";
-            continue;
+        string temp;
+        for(int i=0; i<n; i++){
+            cin >> temp;
+            v.push_back(temp);
         }
         
-        int l=0,r=n-1,sum;
-        bool flag=false;
-        while(l<r){ //이분탐색
-            sum = v[l]+v[r];
-            if(sum==x){
-                flag = true;
-                cout << "yes " << v[l] << " " << v[r] << '\n';
-                break;
+        sort(v.begin(), v.end());
+        
+        bool flag=true;
+        for(int i=0; i<v.size()-1; i++){
+            if(v[i].length()<=v[i+1].length()){
+                if(v[i]==v[i+1].substr(0, v[i].size())){
+                    flag=false;
+                    break;
+                }
             }
-            else if(sum < x)  l++;
-            else r--;
         }
-        if(flag==false) cout << "danger\n";
-    }
 
-    return 0;
+        if(flag==false) cout  << "NO\n";
+        else cout << "YES\n";
+    }
 }
