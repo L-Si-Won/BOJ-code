@@ -2,40 +2,36 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <map>
 
 using namespace std;
 
-int t, n;
-vector<string> v; //10자리 or 0으로 시작
+int n, m;
+map<string, int> man;
+vector<string> answer;
 
 int main() {
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    cin >> t;
-    while(t--){
-        cin >> n;
-        v.clear();
-        string temp;
-        for(int i=0; i<n; i++){
-            cin >> temp;
-            v.push_back(temp);
-        }
-        
-        sort(v.begin(), v.end());
-        
-        bool flag=true;
-        for(int i=0; i<v.size()-1; i++){
-            if(v[i].length()<=v[i+1].length()){
-                if(v[i]==v[i+1].substr(0, v[i].size())){
-                    flag=false;
-                    break;
-                }
-            }
-        }
-
-        if(flag==false) cout  << "NO\n";
-        else cout << "YES\n";
+    cin >> n >> m;
+    for(int i=0; i<n; i++){
+        string s;
+        cin >> s;
+        man.insert({s, 1});
     }
+    for(int i=0; i<m; i++){
+        string s;
+        cin >> s;
+        if(man.find(s)==man.end()) man.insert({s, 1});
+        else man[s]++;
+    }
+    for(auto i=man.begin(); i!=man.end(); i++)
+        if(i->second==2) answer.push_back(i->first);
+    
+    sort(answer.begin(), answer.end());
+    cout << answer.size() << "\n";
+    for(int i=0; i<answer.size(); i++)
+        cout << answer[i] << "\n";
 }
