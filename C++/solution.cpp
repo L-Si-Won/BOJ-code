@@ -1,9 +1,36 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
-int n, m, answer;
-int arr[10001];
+long long n, m, answer;
+vector<long long> tree;
+
+long long calculate(long long l){
+    long long sum=0;
+    for(int i=0; i<tree.size(); i++)
+        if(tree[i]>=l) sum+=tree[i]-l;
+    return sum;
+}
+
+void solve(){
+    long long left=0, right=tree[tree.size()-1];
+    long long mid, sum;
+    while(left<=right){
+        mid=(left+right)/2;
+        sum=calculate(mid);
+
+        if(sum>=m){
+            answer=mid;
+            left=mid+1;
+        }
+        else if(sum<m)
+            right=mid-1;
+    }
+    
+    cout << answer;
+}
 
 int main() {
     cin.tie(NULL);
@@ -11,26 +38,13 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     cin >> n >> m;
-    for(int i=1; i<=n; i++)
-        cin >> arr[i];
-    
-    int start=0, end=0, sum=0;
-    while(start<=end && end<=n){
-        if(sum==m) answer++;
-
-        if(sum<=m){
-            end++;
-            if(end<=n) sum+=arr[end];
-        }
-        else if(sum>m){
-            sum-=arr[start];
-            start++;
-            if(start>end){
-                end++;
-                if(end<=n) sum+=arr[end];
-            }
-        }
+    for(int i=0; i<n; i++){
+        long long a;
+        cin >> a;
+        tree.push_back(a);
     }
 
-    cout << answer;
+    sort(tree.begin(), tree.end());
+
+    solve();
 }
