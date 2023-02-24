@@ -5,12 +5,12 @@
 
 using namespace std;
 
-int n, m, area_num = 1;
+int n, m, area_num;
 int answer[1000][1000], map[1000][1000], area[1000][1000];
 bool visit[1000][1000];
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
-vector<int> area_size(1);
+vector<int> area_size;
 
 void devide_area(int x, int y){
     queue<pair<int, int>> q;
