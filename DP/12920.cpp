@@ -24,12 +24,6 @@ void dp(){
         for(int j = thing[i].v; j <= m; j++)
             d[i][j] = max(d[i - 1][j], d[i - 1][j - thing[i].v] + thing[i].c);
     }
-
-    for(int i = 0; i < thing.size(); i++){
-        for(int j = 0; j <= m; j++)
-            cout << d[i][j] << " ";
-        cout << "\n";
-    }
 }
 
 int main(){
