@@ -40,7 +40,7 @@ int main(){
         for(int j = 1; j <= n; j++)
             cin >> arr[i][j];
 
-    //
+    //devide
     devide(1, 1, n, n);
 
     //output
