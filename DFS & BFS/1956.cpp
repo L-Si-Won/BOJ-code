@@ -1,66 +1,64 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <cstring>
-#define INF 2e9
 
 using namespace std;
 
-int v, e, answer = INF;
-vector<pair<int, int>> road[401];
-bool visit[401];
+int v, e, answer = 2e9;
+vector<pair<int, int>> vil[401];
 int dist[401];
 
-void bfs(int start){
-    queue<pair<int, int>> q; //{위치, 누적거리}
-    q.push({start, 0});
-    dist[start] = INF;
-    visit[start] = true;
+void bfs(int start) {
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> q;
+    q.push({0, start});
 
-    while (!q.empty()){
-        int cur = q.front().first;
-        int sum_dist = q.front().second;
+    while (!q.empty()) {
+        int dis = q.top().first;
+        int cur = q.top().second;
         q.pop();
 
-        for(int i = 0; i < road[cur].size(); i++){
-            int next = road[cur][i].first;
-            int next_dist = road[cur][i].second;
+        if (dis != 0  && cur == start) {
+            answer = min(answer, dis);
+            return;
+        }
+        if (dis > dist[cur]) {
+            continue;
+        }
 
-            if (visit[next] == false || sum_dist + next_dist <= dist[next]){
-                visit[next] = true;
-                dist[next] = sum_dist + next_dist;
-                q.push({next, sum_dist + next_dist});
+        for (int i = 0; i < vil[cur].size(); i++) {
+            int next = vil[cur][i].first;
+            int ndis = dis + vil[cur][i].second;
+
+            if (ndis < dist[next]) {
+                dist[next] = ndis;
+                q.push({ndis, next});
             }
         }
     }
-
-    if (dist[start] != INF)
-        answer = min(answer, dist[start]);
 }
 
-int main(){
+int main() {
     cin.tie(NULL);
     cout.tie(NULL);
     ios_base::sync_with_stdio(false);
 
-    //input
     cin >> v >> e;
-    for(int i = 0; i < e; i++){
+    for (int i = 0; i < e; i++) {
         int a, b, c;
         cin >> a >> b >> c;
-        road[a].push_back({b, c});
+        vil[a].push_back({b, c});
     }
 
-    //bfs
-    for(int i = 1; i <= v; i++){
-        memset(visit, false, sizeof(visit));
-        memset(dist, 0, sizeof(dist));
+    for (int i = 1; i <= v; i++) {
+        for (int j = 1; j <= v; j++) {
+            dist[j] = 2e9;
+        }
         bfs(i);
     }
 
-    //output
-    if (answer == INF)
+    if (answer == 2e9) {
         cout << -1;
-    else
+    } else {
         cout << answer;
+    }
 }
